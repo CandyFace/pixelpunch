@@ -42,9 +42,6 @@ mat3 _mapUnitSquareToQuad(ci::vec2* quad)
 {
 	mat3 result;
     
-//  result[0][2] = quad[0].x;
-//	result[1][2] = quad[0].y;
-//	result[2][2] = 1;
     result[2][0] = quad[0].x;
     result[2][1] = quad[0].y;
     result[2][2] = 1;
@@ -78,15 +75,6 @@ mat3 _mapUnitSquareToQuad(ci::vec2* quad)
 		vec2 d2 = quad[3] - quad[2];
         float del = cross(vec3(d1,0), vec3(d2,0)).z;
 		assert(del != 0);
-
-//		result[2][0] = cross(vec3(p,0), vec3(d2,0)).z / del;
-//		result[2][1] = cross(vec3(d1,0), vec3(p,0)).z / del;
-//	
-//		result[0][0] = quad[1].x - quad[0].x + result[2][0] * quad[1].x;
-//		result[0][1] = quad[3].x - quad[0].x + result[2][1] * quad[3].x;
-//	
-//		result[1][0] = quad[1].y - quad[0].y + result[2][0] * quad[1].y;
-//		result[1][1] = quad[3].y - quad[0].y + result[2][1] * quad[3].y;
         
         result[0][2] = cross(vec3(p,0), vec3(d2,0)).z / del;
         result[1][2] = cross(vec3(d1,0), vec3(p,0)).z / del;
@@ -117,8 +105,7 @@ void _drawProjective(Sampler& sampler, TransformMapping& srcMapping, Surface& de
 	for(int x = 0; x < dest.getWidth(); x++)
 		for(int y = 0; y < dest.getHeight(); y++)
 		{
-            VecExt<float> vecExt;
-			vec3 vSrc = vecExt.transformVec(targetToSource, vec3(x,y,1));
+			vec3 vSrc = targetToSource* vec3(x,y,1);
  
             vSrc /= vSrc.z;
 			if(vSrc.x >= 0 && vSrc.y >= 0 && vSrc.x < srcWidth && vSrc.y < srcHeight)
@@ -182,8 +169,7 @@ void _drawBilinear(Sampler& sampler, TransformMapping& srcMapping, Surface& dest
 			vec2 uv = _transformInvBilinear(vec2(x,y), destMapping.localQuad);
 			if(u >= 0 && u <= 1 && v >= 0 && v <= 1)
 			{
-                VecExt<float> vecExt;
-				vec3 vSrc = vecExt.transformVec(uvToSource, vec3(uv.x,uv.y,1));
+				vec3 vSrc = uvToSource* vec3(uv.x,uv.y,1);
 				vSrc /= vSrc.z;
 				if(vSrc.x >= 0 && vSrc.y >= 0 && vSrc.x < srcWidth && vSrc.y < srcHeight)
 					dest.setPixel(ivec2(x,y), sampler(vSrc.x, vSrc.y) );
@@ -580,12 +566,12 @@ ColorA8u WeightSampler::operator()(float x, float y)
 
 
 	//make sure that
-    int max = 0;
 	int a = -1;
 	while(true)
 	{
 		//assume [a] is max
-        int max = ++a;
+        int max = 0;
+        max = ++a;
 		//find the real max
 		for(k = max + 1; k < i; k++)
 			if(weights[k] > weights[max])

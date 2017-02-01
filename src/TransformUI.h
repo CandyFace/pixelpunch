@@ -12,7 +12,6 @@ public:
 	~TransformUI(void);
 	void setView(ci::ivec2 windowSize, float scale);
 	void setShape(ci::Rectf rect);
-
 	
 	//inpute handlers return true if shape changed
 	bool mouseMove(ci::app::MouseEvent evt);
@@ -46,8 +45,6 @@ private:
 	float getAngle(const ci::vec2& v1, const ci::vec2& v2);
 	ci::mat4 mShapeToView;
 	ci::mat4 mViewToShape;
-    ci::mat4 mRotShape;
-    ci::vec2 mRotDest;
 	ci::vec2 mShapeOffset;
 	ci::vec2 mViewSize;
 	float mViewScale;

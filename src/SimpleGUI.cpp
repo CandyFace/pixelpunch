@@ -39,24 +39,24 @@ namespace mowa { namespace sgui {
 
 //-----------------------------------------------------------------------------
 
-Font SimpleGUI::textFont = Font();
-ColorA SimpleGUI::darkColor = ColorA(0.3, 0.3, 0.3, 1.0);
-ColorA SimpleGUI::lightColor = ColorA(1, 1, 1.0, 1.0);
-ColorA SimpleGUI::bgColor = ColorA(0, 0, 0, 0.5);
-ColorA SimpleGUI::textColor = ColorA(1,1,1,1);
+ci::Font SimpleGUI::textFont = ci::Font();
+ci::ColorA SimpleGUI::darkColor = ci::ColorA(0.3, 0.3, 0.3, 1.0);
+ci::ColorA SimpleGUI::lightColor = ci::ColorA(1, 1, 1.0, 1.0);
+ci::ColorA SimpleGUI::bgColor = ci::ColorA(0, 0, 0, 0.5);
+ci::ColorA SimpleGUI::textColor = ci::ColorA(1,1,1,1);
 float SimpleGUI::spacing = 7;
-vec2 SimpleGUI::padding = vec2(3, 3);
-vec2 SimpleGUI::sliderSize = vec2(125, 10);
-vec2 SimpleGUI::labelSize = vec2(125, 10);
-vec2 SimpleGUI::separatorSize = vec2(125, 1);
+ci::vec2 SimpleGUI::padding = ci::vec2(3, 3);
+ci::vec2 SimpleGUI::sliderSize = ci::vec2(125, 10);
+ci::vec2 SimpleGUI::labelSize = ci::vec2(125, 10);
+ci::vec2 SimpleGUI::separatorSize = ci::vec2(125, 1);
 
-SimpleGUI::SimpleGUI(App* app) {
+    SimpleGUI::SimpleGUI(ci::app::App* app) {
 	init(app);
 	enabled = true;
 }
 
-void SimpleGUI::init(App* app) {
-	textFont = Font("Arial", 12);
+    void SimpleGUI::init(ci::app::App* app) {
+	textFont = ci::Font("Arial", 12);
 	selectedControl = NULL;
     cbMouseDown = app->getWindow()->getSignalMouseDown().connect( std::bind( &SimpleGUI::onMouseDown, this, std::placeholders::_1 ) );
     cbMouseUp = app->getWindow()->getSignalMouseUp().connect( std::bind( &SimpleGUI::onMouseUp, this, std::placeholders::_1 ) );
@@ -84,14 +84,14 @@ BoolVarControl* SimpleGUI::addParam(const std::string& paramName, bool* var, boo
 	return control;
 }
 
-ColorVarControl* SimpleGUI::addParam(const std::string& paramName, ColorA* var, ColorA defaultValue, int colorModel) {
+ColorVarControl* SimpleGUI::addParam(const std::string& paramName, ci::ColorA* var, ci::ColorA defaultValue, int colorModel) {
 	ColorVarControl* control = new ColorVarControl(paramName, var, defaultValue, colorModel);
 	control->parentGui = this;
 	controls.push_back(control);
 	return control;
 }
 
-TextureVarControl* SimpleGUI::addParam(const std::string& paramName, gl::Texture* var, int scale, bool flipVert) {
+TextureVarControl* SimpleGUI::addParam(const std::string& paramName, ci::gl::Texture* var, int scale, bool flipVert) {
 	TextureVarControl* control = new TextureVarControl(paramName, var, scale, flipVert);
 	control->parentGui = this;
 	controls.push_back(control);
@@ -136,13 +136,13 @@ PanelControl* SimpleGUI::addPanel() {
 void SimpleGUI::draw() {
 	if (!enabled) return;
 
-	gl::pushMatrices();
-	gl::setMatricesWindow(getWindowSize());
-	gl::disableDepthRead();
-	gl::disableDepthWrite();
-	gl::enableAlphaBlending();
+	ci::gl::pushMatrices();
+    ci::gl::setMatricesWindow(ci::app::getWindowSize());
+	ci::gl::disableDepthRead();
+	ci::gl::disableDepthWrite();
+	ci::gl::enableAlphaBlending();
 
-	vec2 position = vec2(spacing, spacing);
+	ci::vec2 position = ci::vec2(spacing, spacing);
 
 	ColumnControl* currColumn = NULL;
 	PanelControl* currPanel = NULL;
@@ -168,11 +168,11 @@ void SimpleGUI::draw() {
 		position = control->draw(position);
 	}
 
-	gl::disableAlphaBlending();
-	gl::enableDepthRead();
-	gl::enableDepthWrite();
-	gl::color(ColorA(1,1,1,1));
-	gl::popMatrices();
+	ci::gl::disableAlphaBlending();
+	ci::gl::enableDepthRead();
+	ci::gl::enableDepthWrite();
+	ci::gl::color(ci::ColorA(1,1,1,1));
+	ci::gl::popMatrices();
 }
 
 bool SimpleGUI::isEnabled() {
@@ -193,7 +193,7 @@ void SimpleGUI::dump() {
 }
 
 void SimpleGUI::save(std::string fileName) {
-	console() << "SimpleGUI::save " << fileName << std::endl;
+	ci::app::console() << "SimpleGUI::save " << fileName << std::endl;
 	std::vector<Control*>::iterator it = controls.begin();
 	std::fstream file_op(fileName.c_str(), std::ios::out);
 	while(it != controls.end()) {
@@ -205,11 +205,11 @@ void SimpleGUI::save(std::string fileName) {
 }
 
 void SimpleGUI::load(std::string fileName) {
-	console() << "SimpleGUI::load " << fileName << std::endl;
+    ci::app::console() << "SimpleGUI::load " << fileName << std::endl;
 	std::fstream file_op(fileName.c_str(), std::ios::in);
 	char str[2000];
 	if ((file_op.rdstate() & std::ifstream::failbit ) != 0) {
-		console() << "SimpleGUI::load " << "failed" << std::endl;
+        ci::app::console() << "SimpleGUI::load " << "failed" << std::endl;
 		return;
 	}
 	while(!file_op.eof()) {
@@ -236,7 +236,7 @@ void SimpleGUI::load(std::string fileName) {
 }
 
 
-bool SimpleGUI::onMouseDown(MouseEvent event) {
+    bool SimpleGUI::onMouseDown(ci::app::MouseEvent event) {
 	if (!enabled) return false;
 
 	std::vector<Control*>::iterator it = controls.begin();
@@ -251,7 +251,7 @@ bool SimpleGUI::onMouseDown(MouseEvent event) {
 	return false;
 }
 
-bool SimpleGUI::onMouseUp(MouseEvent event) {
+    bool SimpleGUI::onMouseUp(ci::app::MouseEvent event) {
 	if (!enabled) return false;
 
 	if (selectedControl != NULL) {
@@ -262,7 +262,7 @@ bool SimpleGUI::onMouseUp(MouseEvent event) {
 	return false;
 }
 
-bool SimpleGUI::onMouseDrag(MouseEvent event) {
+    bool SimpleGUI::onMouseDrag(ci::app::MouseEvent event) {
 	if (!enabled) return false;
 
 	mousePos = event.getPos();
@@ -274,15 +274,15 @@ bool SimpleGUI::onMouseDrag(MouseEvent event) {
 	return false;
 }
 
-vec2 SimpleGUI::getStringSize(const std::string& str) {
-	TextLayout text;
+ci::vec2 SimpleGUI::getStringSize(const std::string& str) {
+	ci::TextLayout text;
 	text.addLine(str);
-	Surface s = text.render(true);
+	ci::Surface s = text.render(true);
 	return s.getSize();
 }
 
-Rectf SimpleGUI::getScaledWidthRectf(Rectf rect, float scale) {
-	return Rectf(
+ci::Rectf SimpleGUI::getScaledWidthRectf(ci::Rectf rect, float scale) {
+	return ci::Rectf(
 		rect.getX1(),
 		rect.getY1(),
 		rect.getX1() + rect.getWidth() * scale,
@@ -304,10 +304,10 @@ Control* SimpleGUI::getControlByName(const std::string& name) {
 //-----------------------------------------------------------------------------
 
 Control::Control() {
-	bgColor = ColorA(0.0,0.0,0.0,0.5);
+	bgColor = ci::ColorA(0.0,0.0,0.0,0.5);
 }
 
-void Control::setBackgroundColor(ColorA color) {
+void Control::setBackgroundColor(ci::ColorA color) {
 	bgColor = color;
 }
 
@@ -341,29 +341,29 @@ void FloatVarControl::setNormalizedValue(float value) {
 	}
 }
 
-vec2 FloatVarControl::draw(vec2 pos) {
-	activeArea = Rectf(
+ci::vec2 FloatVarControl::draw(ci::vec2 pos) {
+	activeArea = ci::Rectf(
 		pos.x,
 		pos.y + SimpleGUI::labelSize.y + SimpleGUI::padding.y,
 		pos.x + SimpleGUI::sliderSize.x,
 		pos.y + SimpleGUI::labelSize.y + SimpleGUI::padding.y + SimpleGUI::sliderSize.y
 	);
 
-	gl::color(SimpleGUI::bgColor);
-	gl::drawSolidRect(Rectf(
+	ci::gl::color(SimpleGUI::bgColor);
+	ci::gl::drawSolidRect(ci::Rectf(
 		(pos - SimpleGUI::padding).x,
 		(pos - SimpleGUI::padding).y,
 		(pos + SimpleGUI::sliderSize + SimpleGUI::padding).x,
 		(pos + SimpleGUI::labelSize + SimpleGUI::sliderSize + SimpleGUI::padding*2.0f).y)
 	);
 
-	gl::drawString(name, pos, SimpleGUI::textColor, SimpleGUI::textFont);
+	ci::gl::drawString(name, pos, SimpleGUI::textColor, SimpleGUI::textFont);
 
-	gl::color(SimpleGUI::darkColor);
-	gl::drawSolidRect(activeArea);
+	ci::gl::color(SimpleGUI::darkColor);
+	ci::gl::drawSolidRect(activeArea);
 
-	gl::color(SimpleGUI::lightColor);
-	gl::drawSolidRect(SimpleGUI::getScaledWidthRectf(activeArea, getNormalizedValue()));
+	ci::gl::color(SimpleGUI::lightColor);
+    ci::gl::drawSolidRect(SimpleGUI::getScaledWidthRectf(activeArea, getNormalizedValue()));
 
 	pos.y += SimpleGUI::labelSize.y + SimpleGUI::padding.y + SimpleGUI::sliderSize.y + SimpleGUI::spacing;
 	return pos;
@@ -379,13 +379,13 @@ void FloatVarControl::fromString(std::string& strValue) {
 	*var = boost::lexical_cast<float>(strValue);
 }
 
-void FloatVarControl::onMouseDown(MouseEvent event) {
+    void FloatVarControl::onMouseDown(ci::app::MouseEvent event) {
 	onMouseDrag(event);
 }
 
-void FloatVarControl::onMouseDrag(MouseEvent event) {
+    void FloatVarControl::onMouseDrag(ci::app::MouseEvent event) {
 	float value = (event.getPos().x - activeArea.x1)/(activeArea.x2 - activeArea.x1);
-	value = math<float>::max(0.0, math<float>::min(value, 1.0));
+	value = ci::math<float>::max(0.0, ci::math<float>::min(value, 1.0));
 	setNormalizedValue(value);
 }
 
@@ -419,29 +419,29 @@ void IntVarControl::setNormalizedValue(float value) {
 	}
 }
 
-vec2 IntVarControl::draw(vec2 pos) {
-	activeArea = Rectf(
+ci::vec2 IntVarControl::draw(ci::vec2 pos) {
+	activeArea = ci::Rectf(
 					   pos.x,
 					   pos.y + SimpleGUI::labelSize.y + SimpleGUI::padding.y,
 					   pos.x + SimpleGUI::sliderSize.x,
 					   pos.y + SimpleGUI::labelSize.y + SimpleGUI::padding.y + SimpleGUI::sliderSize.y
 					   );
 
-	gl::color(SimpleGUI::bgColor);
-	gl::drawSolidRect(Rectf(
+	ci::gl::color(SimpleGUI::bgColor);
+	ci::gl::drawSolidRect(ci::Rectf(
 							(pos - SimpleGUI::padding).x,
 							(pos - SimpleGUI::padding).y,
 							(pos + SimpleGUI::sliderSize + SimpleGUI::padding).x,
 							(pos + SimpleGUI::labelSize + SimpleGUI::sliderSize + SimpleGUI::padding*2.0f).y)
 					  );
 
-	gl::drawString(name, pos, SimpleGUI::textColor, SimpleGUI::textFont);
+	ci::gl::drawString(name, pos, SimpleGUI::textColor, SimpleGUI::textFont);
 
-	gl::color(SimpleGUI::darkColor);
-	gl::drawSolidRect(activeArea);
+	ci::gl::color(SimpleGUI::darkColor);
+	ci::gl::drawSolidRect(activeArea);
 
-	gl::color(SimpleGUI::lightColor);
-	gl::drawSolidRect(SimpleGUI::getScaledWidthRectf(activeArea, getNormalizedValue()));
+	ci::gl::color(SimpleGUI::lightColor);
+	ci::gl::drawSolidRect(SimpleGUI::getScaledWidthRectf(activeArea, getNormalizedValue()));
 
 	pos.y += SimpleGUI::labelSize.y + SimpleGUI::padding.y + SimpleGUI::sliderSize.y + SimpleGUI::spacing;
 	return pos;
@@ -457,14 +457,14 @@ void IntVarControl::fromString(std::string& strValue) {
 	*var = boost::lexical_cast<int>(strValue);
 }
 
-void IntVarControl::onMouseDown(MouseEvent event) {
+    void IntVarControl::onMouseDown(ci::app::MouseEvent event) {
 	onMouseDrag(event);
 }
 
-void IntVarControl::onMouseDrag(MouseEvent event) {
-	float value = (event.getPos().x - activeArea.x1)/(activeArea.x2 - activeArea.x1);
-	value = math<float>::max(0.0, math<float>::min(value, 1.0));
-	setNormalizedValue(value);
+    void IntVarControl::onMouseDrag(ci::app::MouseEvent event) {
+        float value = (event.getPos().x - activeArea.x1)/(activeArea.x2 - activeArea.x1);
+        value = ci::math<float>::max(0.0, ci::math<float>::min(value, 1.0));
+        setNormalizedValue(value);
 }
 
 //-----------------------------------------------------------------------------
@@ -477,18 +477,18 @@ BoolVarControl::BoolVarControl(const std::string& name, bool* var, bool defaultV
 	*var = defaultValue;
 }
 
-vec2 BoolVarControl::draw(vec2 pos) {
-	activeArea = Rectf(pos.x, pos.y, pos.x + SimpleGUI::sliderSize.y, pos.y + SimpleGUI::sliderSize.y);
-	gl::color(SimpleGUI::bgColor);
-	gl::drawSolidRect(Rectf(
+ci::vec2 BoolVarControl::draw(ci::vec2 pos) {
+	activeArea = ci::Rectf(pos.x, pos.y, pos.x + SimpleGUI::sliderSize.y, pos.y + SimpleGUI::sliderSize.y);
+	ci::gl::color(SimpleGUI::bgColor);
+	ci::gl::drawSolidRect(ci::Rectf(
 		(pos - SimpleGUI::padding).x,
 		(pos - SimpleGUI::padding).y,
 		(pos + SimpleGUI::sliderSize + SimpleGUI::padding).x,
 		(pos + SimpleGUI::sliderSize + SimpleGUI::padding).y)
 	);
-	gl::drawString(name, vec2(pos.x + SimpleGUI::sliderSize.y + SimpleGUI::padding.x*2.0f, pos.y), SimpleGUI::textColor, SimpleGUI::textFont);
-	gl::color((*var) ? SimpleGUI::lightColor : SimpleGUI::darkColor);
-	gl::drawSolidRect(activeArea);
+	ci::gl::drawString(name, ci::vec2(pos.x + SimpleGUI::sliderSize.y + SimpleGUI::padding.x*2.0f, pos.y), SimpleGUI::textColor, SimpleGUI::textFont);
+	ci::gl::color((*var) ? SimpleGUI::lightColor : SimpleGUI::darkColor);
+	ci::gl::drawSolidRect(activeArea);
 	pos.y += SimpleGUI::sliderSize.y + SimpleGUI::spacing;
 	return pos;
 }
@@ -504,7 +504,7 @@ void BoolVarControl::fromString(std::string& strValue) {
 	*var = value ? true : false;
 }
 
-void BoolVarControl::onMouseDown(MouseEvent event) {
+    void BoolVarControl::onMouseDown(ci::app::MouseEvent event) {
 	if (groupId > -1) {
 		for(std::vector<Control*>::iterator it2 = parentGui->getControls().begin(); it2 != parentGui->getControls().end(); it2++) {
 			if (((*it2)->type == Control::BOOL_VAR) && (((BoolVarControl*)(*it2))->groupId == this->groupId)) {
@@ -519,7 +519,7 @@ void BoolVarControl::onMouseDown(MouseEvent event) {
 
 //-----------------------------------------------------------------------------
 
-ColorVarControl::ColorVarControl(const std::string& name, ColorA* var, ColorA defaultValue, int colorModel) {
+ColorVarControl::ColorVarControl(const std::string& name, ci::ColorA* var, ci::ColorA defaultValue, int colorModel) {
 	this->type = Control::COLOR_VAR;
 	this->name = name;
 	this->var = var;
@@ -528,77 +528,77 @@ ColorVarControl::ColorVarControl(const std::string& name, ColorA* var, ColorA de
 	activeTrack = 0;
 }
 
-vec2 ColorVarControl::draw(vec2 pos) {
-	activeArea1 = Rectf(
+ci::vec2 ColorVarControl::draw(ci::vec2 pos) {
+	activeArea1 = ci::Rectf(
 		pos.x,
 		pos.y + SimpleGUI::labelSize.y + SimpleGUI::padding.y,
 		pos.x + SimpleGUI::sliderSize.x,
 		pos.y + SimpleGUI::sliderSize.y + SimpleGUI::labelSize.y + SimpleGUI::padding.y
 	);
 
-	activeArea2 = Rectf(
+	activeArea2 = ci::Rectf(
 		pos.x,
 		pos.y + SimpleGUI::labelSize.y + SimpleGUI::sliderSize.y + SimpleGUI::padding.y*2.0f,
 		pos.x + SimpleGUI::sliderSize.x,
 		pos.y + SimpleGUI::sliderSize.y*2.0f + SimpleGUI::padding.y*2.0f + SimpleGUI::labelSize.y
 	);
 
-	activeArea3 = Rectf(
+	activeArea3 = ci::Rectf(
 		pos.x,
 		pos.y + SimpleGUI::labelSize.y + SimpleGUI::sliderSize.y*2.0f + SimpleGUI::padding.y*3.0f,
 		pos.x + SimpleGUI::sliderSize.x,
 		pos.y + SimpleGUI::sliderSize.y*3.0f + SimpleGUI::padding.y*3.0f + SimpleGUI::labelSize.y
 	);
 
-	activeArea4 = Rectf(
+	activeArea4 = ci::Rectf(
 		pos.x,
 		pos.y + SimpleGUI::labelSize.y + SimpleGUI::sliderSize.y*3.0f + SimpleGUI::padding.y*4.0f,
 		pos.x + SimpleGUI::sliderSize.x,
 		pos.y + SimpleGUI::sliderSize.y*4.0f + SimpleGUI::padding.y*4.0f + SimpleGUI::labelSize.y
 	);
 
-	activeArea = Rectf(
+	activeArea = ci::Rectf(
 		pos.x,
 		pos.y + SimpleGUI::labelSize.y,
 		pos.x + SimpleGUI::sliderSize.x,
 		pos.y + SimpleGUI::sliderSize.y*4.0f + SimpleGUI::padding.y*4.0f + SimpleGUI::labelSize.y
 	);
 
-	vec4 values;
+	ci::vec4 values;
 	if (colorModel == SimpleGUI::RGB) {
-		values = vec4(var->r, var->g, var->b, var->a);
+		values = ci::vec4(var->r, var->g, var->b, var->a);
 	}
 	else {
-		vec3 hsv = rgbToHsv(*var);
+		ci::vec3 hsv = rgbToHsv(*var);
 		values.x = hsv.x;
 		values.y = hsv.y;
 		values.z = hsv.z;
 		values.w = var->a;
 	}
 
-	gl::color(SimpleGUI::bgColor);
-	gl::drawSolidRect(Rectf(
+	ci::gl::color(SimpleGUI::bgColor);
+	ci::gl::drawSolidRect(ci::Rectf(
 		(pos - SimpleGUI::padding).x,
 		(pos - SimpleGUI::padding).y,
 		(pos + SimpleGUI::sliderSize + SimpleGUI::padding).x,
 		(pos + SimpleGUI::labelSize + SimpleGUI::sliderSize*4.0f + SimpleGUI::padding*5.0f).y)
 	);
 
-	gl::drawString(name, pos, SimpleGUI::textColor, SimpleGUI::textFont);
-	gl::color(SimpleGUI::darkColor);
-	gl::drawSolidRect(activeArea1);
-	gl::drawSolidRect(activeArea2);
-	gl::drawSolidRect(activeArea3);
-	gl::drawSolidRect(activeArea4);
-	gl::color(SimpleGUI::lightColor);
-	Rectf rect1 = SimpleGUI::getScaledWidthRectf(activeArea1, values.x);
-	Rectf rect2 = SimpleGUI::getScaledWidthRectf(activeArea2, values.y);
-	Rectf rect3 = SimpleGUI::getScaledWidthRectf(activeArea3, values.z);
-	Rectf rect4 = SimpleGUI::getScaledWidthRectf(activeArea4, values.w);
-	gl::drawLine(vec2(rect1.x2, rect1.y1), vec2(rect1.x2, rect1.y2));
-	gl::drawLine(vec2(rect2.x2, rect2.y1), vec2(rect2.x2, rect2.y2));
-	gl::drawLine(vec2(rect3.x2, rect3.y1), vec2(rect3.x2, rect3.y2));
-	gl::drawLine(vec2(rect4.x2, rect4.y1), vec2(rect4.x2, rect4.y2));
+	ci::gl::drawString(name, pos, SimpleGUI::textColor, SimpleGUI::textFont);
+	ci::gl::color(SimpleGUI::darkColor);
+	ci::gl::drawSolidRect(activeArea1);
+	ci::gl::drawSolidRect(activeArea2);
+	ci::gl::drawSolidRect(activeArea3);
+	ci::gl::drawSolidRect(activeArea4);
+	ci::gl::color(SimpleGUI::lightColor);
+	ci::Rectf rect1 = SimpleGUI::getScaledWidthRectf(activeArea1, values.x);
+	ci::Rectf rect2 = SimpleGUI::getScaledWidthRectf(activeArea2, values.y);
+	ci::Rectf rect3 = SimpleGUI::getScaledWidthRectf(activeArea3, values.z);
+	ci::Rectf rect4 = SimpleGUI::getScaledWidthRectf(activeArea4, values.w);
+	ci::gl::drawLine(ci::vec2(rect1.x2, rect1.y1), ci::vec2(rect1.x2, rect1.y2));
+	ci::gl::drawLine(ci::vec2(rect2.x2, rect2.y1), ci::vec2(rect2.x2, rect2.y2));
+	ci::gl::drawLine(ci::vec2(rect3.x2, rect3.y1), ci::vec2(rect3.x2, rect3.y2));
+	ci::gl::drawLine(ci::vec2(rect4.x2, rect4.y1), ci::vec2(rect4.x2, rect4.y2));
 	pos.y += SimpleGUI::labelSize.y + SimpleGUI::padding.y + SimpleGUI::sliderSize.y * 4.0f + SimpleGUI::padding.y * 3.0f + SimpleGUI::spacing;
 	return pos;
 }
@@ -619,7 +619,7 @@ void ColorVarControl::fromString(std::string& strValue) {
 }
 
 
-void ColorVarControl::onMouseDown(MouseEvent event) {
+    void ColorVarControl::onMouseDown(ci::app::MouseEvent event) {
 	if (activeArea1.contains(event.getPos())) {
 		activeTrack = 1;
 	}
@@ -635,9 +635,9 @@ void ColorVarControl::onMouseDown(MouseEvent event) {
 	onMouseDrag(event);
 }
 
-void ColorVarControl::onMouseDrag(MouseEvent event) {
+    void ColorVarControl::onMouseDrag(ci::app::MouseEvent event) {
 	float value = (event.getPos().x - activeArea.x1)/(activeArea.x2 - activeArea.x1);
-	value = math<float>::max(0.0, math<float>::min(value, 1.0));
+        value = ci::math<float>::max(0.0, ci::math<float>::min(value, 1.0));
 
 	if (colorModel == SimpleGUI::RGB) {
 		switch (activeTrack) {
@@ -648,14 +648,14 @@ void ColorVarControl::onMouseDrag(MouseEvent event) {
 		}
 	}
 	else {
-		vec3 hsv = rgbToHsv(*var);
+		ci::vec3 hsv = rgbToHsv(*var);
 		switch (activeTrack) {
 			case 1: hsv.x = value; break;
 			case 2: hsv.y = value; break;
 			case 3: hsv.z = value; break;
 			case 4: var->a = value; break;
 		}
-		*var = ColorA(CM_HSV, hsv.x, hsv.y, hsv.z, var->a);
+		*var = ci::ColorA(ci::CM_HSV, hsv.x, hsv.y, hsv.z, var->a);
 	}
 }
 
@@ -667,16 +667,16 @@ ButtonControl::ButtonControl(const std::string& name) {
 	this->pressed = false;
 }
 
-vec2 ButtonControl::draw(vec2 pos) {
-	activeArea = Rectf(
+ci::vec2 ButtonControl::draw(ci::vec2 pos) {
+	activeArea = ci::Rectf(
 					   pos.x,
 					   pos.y,
 					   pos.x + SimpleGUI::sliderSize.x,
 					   pos.y + SimpleGUI::labelSize.y + SimpleGUI::padding.y*1.0f
 					   );
 
-	gl::color(SimpleGUI::bgColor);
-	gl::drawSolidRect(Rectf(
+	ci::gl::color(SimpleGUI::bgColor);
+	ci::gl::drawSolidRect(ci::Rectf(
 							(pos - SimpleGUI::padding).x,
 							(pos - SimpleGUI::padding).y,
 							(pos + SimpleGUI::sliderSize + SimpleGUI::padding).x,
@@ -684,26 +684,26 @@ vec2 ButtonControl::draw(vec2 pos) {
 					  );
 
 
-	gl::color(pressed ? SimpleGUI::lightColor : SimpleGUI::darkColor);
-	gl::drawSolidRect(activeArea);
-	gl::drawString(name, vec2(pos.x + SimpleGUI::padding.x * 2.0f, pos.y + floor(SimpleGUI::padding.y * 0.5f)), pressed ? SimpleGUI::darkColor : SimpleGUI::textColor, SimpleGUI::textFont);
+	ci::gl::color(pressed ? SimpleGUI::lightColor : SimpleGUI::darkColor);
+	ci::gl::drawSolidRect(activeArea);
+	ci::gl::drawString(name, ci::vec2(pos.x + SimpleGUI::padding.x * 2.0f, pos.y + floor(SimpleGUI::padding.y * 0.5f)), pressed ? SimpleGUI::darkColor : SimpleGUI::textColor, SimpleGUI::textFont);
 	pos.y += SimpleGUI::sliderSize.y + SimpleGUI::spacing + SimpleGUI::padding.y;
 	return pos;
 }
 
-void ButtonControl::onMouseDown(MouseEvent event) {
+    void ButtonControl::onMouseDown(ci::app::MouseEvent event) {
 	pressed = true;
 	fireClick();
 }
 
-void ButtonControl::onMouseUp(MouseEvent event) {
+    void ButtonControl::onMouseUp(ci::app::MouseEvent event) {
 	pressed = false;
 }
 
 void ButtonControl::fireClick() {
-	MouseEvent event;
+    ci::app::MouseEvent event;
 	bool handled = false;
-	for( CallbackMgr<bool (MouseEvent)>::iterator cbIter = callbacksClick.begin(); ( cbIter != callbacksClick.end() ) && ( ! handled ); ++cbIter ) {
+    for( ci::CallbackMgr<bool (ci::app::MouseEvent)>::iterator cbIter = callbacksClick.begin(); ( cbIter != callbacksClick.end() ) && ( ! handled ); ++cbIter ) {
 		handled = (cbIter->second)( event );
 	}
 }
@@ -719,20 +719,20 @@ void LabelControl::setText(const std::string& text) {
 	name = text;
 }
 
-vec2 LabelControl::draw(vec2 pos) {
-	if (bgColor == ColorA(0.0,0.0,0.0,0.5)) {
-		gl::color(bgColor);
+ci::vec2 LabelControl::draw(ci::vec2 pos) {
+	if (bgColor == ci::ColorA(0.0,0.0,0.0,0.5)) {
+		ci::gl::color(bgColor);
 	}
 	else {
-		gl::color(SimpleGUI::bgColor);
+		ci::gl::color(SimpleGUI::bgColor);
 	}
-	gl::drawSolidRect(Rectf(
+	ci::gl::drawSolidRect(ci::Rectf(
 		(pos - SimpleGUI::padding).x,
 		(pos - SimpleGUI::padding).y,
 		(pos + SimpleGUI::sliderSize + SimpleGUI::padding).x,
 		(pos + SimpleGUI::labelSize + SimpleGUI::padding).y
 	));
-	gl::drawString(name, pos, SimpleGUI::textColor, SimpleGUI::textFont);
+	ci::gl::drawString(name, pos, SimpleGUI::textColor, SimpleGUI::textFont);
 	pos.y += SimpleGUI::labelSize.y + SimpleGUI::spacing;
 	return pos;
 }
@@ -744,10 +744,10 @@ SeparatorControl::SeparatorControl() {
 	this->name = "Separator";
 }
 
-vec2 SeparatorControl::draw(vec2 pos) {
-	activeArea = Rectf(pos - SimpleGUI::padding, pos + SimpleGUI::separatorSize + SimpleGUI::padding);
-	gl::color(SimpleGUI::bgColor);
-	gl::drawSolidRect(activeArea);
+ci::vec2 SeparatorControl::draw(ci::vec2 pos) {
+	activeArea = ci::Rectf(pos - SimpleGUI::padding, pos + SimpleGUI::separatorSize + SimpleGUI::padding);
+	ci::gl::color(SimpleGUI::bgColor);
+	ci::gl::drawSolidRect(activeArea);
 	pos.y += SimpleGUI::separatorSize.y + SimpleGUI::spacing;
 	return pos;
 }
@@ -761,7 +761,7 @@ ColumnControl::ColumnControl(int x, int y) {
 	this->name = "Column";
 }
 
-vec2 ColumnControl::draw(vec2 pos) {
+ci::vec2 ColumnControl::draw(ci::vec2 pos) {
 	if (this->x == 0 && this->y == 0) {
 		pos.x += SimpleGUI::labelSize.x + SimpleGUI::spacing;
 		pos.y = SimpleGUI::spacing;
@@ -781,13 +781,13 @@ PanelControl::PanelControl() {
 	this->name = "Panel";
 }
 
-vec2 PanelControl::draw(vec2 pos) {
+ci::vec2 PanelControl::draw(ci::vec2 pos) {
 	return pos;
 }
 
 //-----------------------------------------------------------------------------
 
-TextureVarControl::TextureVarControl(const std::string& name, gl::Texture* var, int scale, bool flipVert) {
+TextureVarControl::TextureVarControl(const std::string& name, ci::gl::Texture* var, int scale, bool flipVert) {
 	this->type = Control::TEXTURE_VAR;
 	this->name = name;
 	this->var = var;
@@ -795,25 +795,25 @@ TextureVarControl::TextureVarControl(const std::string& name, gl::Texture* var, 
 	this->flipVert = flipVert;
 }
 
-vec2 TextureVarControl::draw(vec2 pos) {
+ci::vec2 TextureVarControl::draw(ci::vec2 pos) {
 	if (!var) {
 		std::cout << "Missing texture" << std::endl;
 		return pos;
 	}
 
-	vec2 textureSize;
-	textureSize.x = math<float>::floor(SimpleGUI::sliderSize.x * scale + SimpleGUI::spacing * (scale - 1));
-	textureSize.y = math<float>::floor(textureSize.x / var->getAspectRatio());
-	activeArea = Rectf(pos.x, pos.y, pos.x + textureSize.x, pos.y + textureSize.y);
-	gl::color(SimpleGUI::bgColor);
-	gl::drawSolidRect(Rectf(
+	ci::vec2 textureSize;
+	textureSize.x = ci::math<float>::floor(SimpleGUI::sliderSize.x * scale + SimpleGUI::spacing * (scale - 1));
+	textureSize.y = ci::math<float>::floor(textureSize.x / var->getAspectRatio());
+	activeArea = ci::Rectf(pos.x, pos.y, pos.x + textureSize.x, pos.y + textureSize.y);
+	ci::gl::color(SimpleGUI::bgColor);
+	ci::gl::drawSolidRect(ci::Rectf(
 		activeArea.x1 - SimpleGUI::padding.x,
 		activeArea.y1 - SimpleGUI::padding.y,
 		activeArea.x2 + SimpleGUI::padding.x,
 		activeArea.y2 + SimpleGUI::padding.y
 	));
-	gl::color(1,1,1,1);
-    gl::draw((gl::TextureRef)var, activeArea);
+	ci::gl::color(1,1,1,1);
+    ci::gl::draw((ci::gl::TextureRef)var, activeArea);
 	pos.y += activeArea.getHeight() + SimpleGUI::spacing;
 	return pos;
 }
