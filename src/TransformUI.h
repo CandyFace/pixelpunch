@@ -12,13 +12,17 @@ public:
 	~TransformUI(void);
 	void setView(ci::ivec2 windowSize, float scale);
 	void setShape(ci::Rectf rect);
+    
+    void resetTransformation();
 	
 	//inpute handlers return true if shape changed
 	bool mouseMove(ci::app::MouseEvent evt);
 	bool mouseDown(ci::app::MouseEvent evt);
 	bool mouseUp(ci::app::MouseEvent evt);
 	bool mouseDrag(ci::app::MouseEvent evt);
+    bool mShiftDown;
 
+    void init();
 	void draw();
 	void center();
 	ci::Rectf getBounds();
@@ -30,6 +34,7 @@ public:
 	static const int TOP_RIGHT = 1;
 	static const int BOTTOM_RIGHT = 2;
 	static const int BOTTOM_LEFT = 3;
+    const float lockedAngles[9] = {0.0, 0.785398, 1.5708, 2.35619, 3.14159, 3.92699, 4.71239, 5.49779, 6.28319 };
 
 	static const int TOP = 0;
 	static const int RIGHT = 1;
@@ -37,12 +42,14 @@ public:
 	static const int LEFT = 3;
 
 	ci::vec2 shape[4];
+    ci::vec2 mInitRotShape[4];
 	
 private:
 	void updateMatrix();
 	ci::vec2 rotatePoint(const ci::vec2& point, const ci::vec2& rotBase, float angleRadian);
 	void drawRotationCone();
 	float getAngle(const ci::vec2& v1, const ci::vec2& v2);
+    float setAngle(float angle);
 	ci::mat4 mShapeToView;
 	ci::mat4 mViewToShape;
 	ci::vec2 mShapeOffset;
@@ -50,6 +57,7 @@ private:
 	float mViewScale;
 	bool mLeftMouseDown;
 	bool mRightMouseDown;
+    bool mResetPressed;
     float angleDeg;
 	//dragging
 	int mDraggedCorner;

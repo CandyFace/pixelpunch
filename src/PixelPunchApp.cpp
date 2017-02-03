@@ -38,6 +38,9 @@ public:
 	void mouseDrag( MouseEvent event );
 	void mouseDown( MouseEvent event );
 	void mouseUp( MouseEvent event );
+    bool restartButtonClick (MouseEvent event);
+    bool saveButtonClick (MouseEvent event);
+    bool openButtonClick (MouseEvent event);
 
 	// Cinder calls this function 30 times per second by default
 	void draw();
@@ -45,6 +48,7 @@ public:
 	void setup();
 	void saveResultToFile();
 
+    void openImageFromDialog();
 private:
 	void initOptions();
 	void validateResultImage();
@@ -167,8 +171,19 @@ void PixelPunchApp::setup()
 	}
 	mGui->addParam("Mix Threshold", &mMixThreshold, 0.0f, 1.0f, 0.5f); //if we specify group id, we create radio button set
 	mGui->addParam("Show Diff", &mDiffWithSmoothBicubic, false);
-
 	mPerfLabel = mGui->addLabel("Perf: 0 ms");
+    
+    mGui->addColumn();
+    //let's add a button
+    mGui->addButton("Reset")->registerClick(this, &PixelPunchApp::restartButtonClick);
+
+    mGui->addColumn();
+    //let's add a button
+    mGui->addButton("Open")->registerClick(this, &PixelPunchApp::openButtonClick);
+    
+    //let's add a button
+    mGui->addButton("Save")->registerClick(this, &PixelPunchApp::saveButtonClick);
+    mGui->addColumn();
 }
 
 void PixelPunchApp::fileDrop( FileDropEvent event)
@@ -182,6 +197,7 @@ void PixelPunchApp::fileDrop( FileDropEvent event)
     
 	mTransformUI.setShape(cinder::Rectf(0,0,(float)mSourceImage.getWidth(),(float)mSourceImage.getHeight()));
 	mTransformUI.center();
+    mTransformUI.init();
 
 	validateResultImage();
 }
@@ -348,14 +364,31 @@ void PixelPunchApp::keyDown( KeyEvent event )
 		setFullScreen( ! isFullScreen() );
 	else if( event.getChar() == ' ' )
 		mDisplaySource = true;
+    else if (event.getChar() == 'r')
+    {
+        mTransformUI.resetTransformation();
+        mResultImage = Surface();
+    }
+    else if (event.getChar() == 'o')
+        openImageFromDialog();
+    
 	else if( event.getChar() == 's' )
 		saveResultToFile();
+    
+    if (event.isShiftDown())
+    {
+        mTransformUI.mShiftDown = true;
+    }
 }
 
 void PixelPunchApp::keyUp( KeyEvent event )
 {
 	if( event.getChar() == ' ' )
 		mDisplaySource = false;
+    if( !event.isShiftDown())
+    {
+        mTransformUI.mShiftDown = false;
+    }
 }
 
 void PixelPunchApp::mouseMove( MouseEvent event )
@@ -376,8 +409,28 @@ void PixelPunchApp::mouseUp( MouseEvent event )
 
 void PixelPunchApp::mouseDrag( MouseEvent event )
 {
-	if(mTransformUI.mouseDrag(event))
-		mResultImage = Surface();
+    if (mTransformMethod != pp::TransformMethod::TM_IDENTITY)
+        if(mTransformUI.mouseDrag(event))
+            mResultImage = Surface();
+}
+
+bool PixelPunchApp::restartButtonClick(MouseEvent evnet)
+{
+    mTransformUI.resetTransformation();
+    mResultImage = Surface();
+    return false;
+}
+
+bool PixelPunchApp::openButtonClick(MouseEvent evnet)
+{
+    openImageFromDialog();
+    return false;
+}
+
+bool PixelPunchApp::saveButtonClick(MouseEvent evnet)
+{
+    saveResultToFile();
+    return false;
 }
 
 void PixelPunchApp::update()
@@ -428,8 +481,9 @@ void PixelPunchApp::draw()
 
 void PixelPunchApp::saveResultToFile()
 {
-	if(mResultImage.getData() != NULL)
-	{
+    try {
+        if(mResultImage.getData() != NULL)
+        {
 		std::vector<std::string> extensions = ImageIo::getWriteExtensions();
 		std::string suffix = mScaleOptions[mScaleMethod];
 		std::string path = mSourceFileName;
@@ -437,8 +491,36 @@ void PixelPunchApp::saveResultToFile()
 		std::string savePath = getSaveFilePath(path, extensions).string();
 		if(!savePath.empty() ) 
 			writeImage(savePath, mResultImage);	
-	}
+        }
+    }
+    catch ( ... ) {
+        console() << "Saving didn't work, check mSourceFileName" << std::endl;
+    }
 
+}
+
+void PixelPunchApp::openImageFromDialog()
+{
+    try {
+        fs::path imgPath = getOpenFilePath( "", ImageIo::getLoadExtensions() );
+        if( ! imgPath.empty() ) { // an empty string means the user canceled
+            mSourceFileName = imgPath.string();
+            mSourceImage = loadImage(mSourceFileName);
+            mPrevTexture = gl::Texture::create(mSourceImage);
+            mPrevTexture->setMagFilter(GL_NEAREST);
+            mResultImage = Surface();
+            mScaledSrc = Surface();
+            
+            mTransformUI.setShape(cinder::Rectf(0,0,(float)mSourceImage.getWidth(),(float)mSourceImage.getHeight()));
+            mTransformUI.center();
+            mTransformUI.init();
+            validateResultImage();
+        }
+    }
+    catch( ... ) {
+        console() << "Unable to load the image." << std::endl;
+    }
+    
 }
 
 
