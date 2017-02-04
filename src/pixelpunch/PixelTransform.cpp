@@ -3,7 +3,6 @@
 #include "Kernel.h"
 #include "cinder/Matrix.h"
 #include <cassert>
-#include "CinderExtensions.h"
 
 using namespace cinder;
 using namespace pp;

@@ -1,7 +1,6 @@
 #include "PixelPunch.h"
 #include "Kernel.h"
 #include <cassert>
-#include "CinderExtensions.h"
 
 using namespace cinder;
 

@@ -24,8 +24,9 @@ using namespace mowa::sgui;
 
 #include <boost/format.hpp>
 
-void staticMouseDownHandler( MouseEvent event );
-void staticMouseUpHandler( MouseEvent event );
+
+void staticMouseDownHandler ( MouseEvent event );
+void staticMouseUpHandler ( MouseEvent event );
 
 // We'll create a new Cinder Application by deriving from the BasicApp class
 class PixelPunchApp : public App {
@@ -38,17 +39,19 @@ public:
 	void mouseDrag( MouseEvent event );
 	void mouseDown( MouseEvent event );
 	void mouseUp( MouseEvent event );
-    bool restartButtonClick (MouseEvent event);
-    bool saveButtonClick (MouseEvent event);
-    bool openButtonClick (MouseEvent event);
+    bool restartButtonClick ( MouseEvent event );
+    bool saveButtonClick ( MouseEvent event );
+    bool openButtonClick ( MouseEvent event );
+    bool fileHasChanged( std::string path );
 
 	// Cinder calls this function 30 times per second by default
 	void draw();
 	void update();
 	void setup();
 	void saveResultToFile();
-
     void openImageFromDialog();
+    void reloadImage();
+    
 private:
 	void initOptions();
 	void validateResultImage();
@@ -72,7 +75,6 @@ private:
 	typedef std::map<pp::SamplingMethod, std::string> SamplingMethodNames;
 	SamplingMethodNames		mSamplingOptions;
 	bool					mSamplingChoice[20];//[hacky] provide room for all possible values of TransformMethod as index
-	
 
 	//Current parameters
 	pp::ScaleMethod			mScaleMethod;
@@ -84,14 +86,21 @@ private:
 	bool					mDiffWithSmoothBicubic;
 	float					mViewScale;
 	bool					mDisplaySource;
-
 	//DATA
 	std::string				mSourceFileName;
 	Surface					mSourceImage;
+    Surface                 mOrigImage;
 	Surface					mScaledSrc;
 	gl::TextureRef             mPrevTexture;
 	Surface					mResultImage;
 	gl::TextureRef             mResultTexture;
+
+    
+#if defined( CINDER_WINRT ) || ( defined( _MSC_VER ) && ( _MSC_VER >= 1900 ) )
+    std::map< std::string, ci::fs::file_time_type >         mModificationTimes;
+#else
+    std::map< std::string, time_t >                         mModificationTimes;
+#endif
 };
 
 
@@ -130,6 +139,7 @@ void PixelPunchApp::initOptions()
 	mSamplingOptions[pp::SAMPLE_BEST_FIT_ANY] = "Best Fit Any";
 	mSamplingOptions[pp::SAMPLE_MINIMIZE_ERROR] = "Bilinear Mix";
 	mSamplingMethod = pp::SAMPLE_NEAREST;
+
 }
 
 void PixelPunchApp::setup()
@@ -140,9 +150,10 @@ void PixelPunchApp::setup()
 	mDisplaySource = false;
 
 	mGui = new SimpleGUI(this);
+
 	mGui->addLabel("View");
 	mGui->addParam("Zoom", &mViewScale, 1, 10, 4); //if we specify group id, we create radio button set
-	
+
 	//RadioButton Group: Upscaling Type
 	mGui->addLabel("1. Upscaling");
 	bool selected = true;
@@ -184,6 +195,7 @@ void PixelPunchApp::setup()
     //let's add a button
     mGui->addButton("Save")->registerClick(this, &PixelPunchApp::saveButtonClick);
     mGui->addColumn();
+
 }
 
 void PixelPunchApp::fileDrop( FileDropEvent event)
@@ -436,6 +448,23 @@ bool PixelPunchApp::saveButtonClick(MouseEvent evnet)
 void PixelPunchApp::update()
 {
 	validateResultImage();
+	reloadImage();
+}
+
+void PixelPunchApp::reloadImage()
+{
+    if (mSourceFileName != ""){
+        mOrigImage = loadImage(mSourceFileName);
+            if (fileHasChanged(mSourceFileName)){
+                mSourceImage = mOrigImage;
+                mPrevTexture = gl::Texture::create(mSourceImage);
+                mPrevTexture->setMagFilter(GL_NEAREST);
+                mResultImage = Surface();
+                mScaledSrc = Surface();
+            
+                mTransformUI.setShape(cinder::Rectf(0,0,(float)mSourceImage.getWidth(),(float)mSourceImage.getHeight()));
+        }
+    }
 }
 
 void PixelPunchApp::draw()
@@ -473,7 +502,6 @@ void PixelPunchApp::draw()
 		mTransformUI.draw();
 	}
 
-	
 	// Draw the interface
 	//params::InterfaceGl::draw();
 	mGui->draw();
@@ -506,6 +534,7 @@ void PixelPunchApp::openImageFromDialog()
         if( ! imgPath.empty() ) { // an empty string means the user canceled
             mSourceFileName = imgPath.string();
             mSourceImage = loadImage(mSourceFileName);
+            mOrigImage = mSourceImage;
             mPrevTexture = gl::Texture::create(mSourceImage);
             mPrevTexture->setMagFilter(GL_NEAREST);
             mResultImage = Surface();
@@ -520,9 +549,25 @@ void PixelPunchApp::openImageFromDialog()
     catch( ... ) {
         console() << "Unable to load the image." << std::endl;
     }
-    
 }
 
+bool PixelPunchApp::fileHasChanged( std::string path )
+{
+    // get the last modification time
+    auto time = ci::fs::last_write_time( path );
+    // add a new modification time to the map
+    if( mModificationTimes.find( path ) == mModificationTimes.end() ) {
+        mModificationTimes[ path ] = time;
+        return true;
+    }
+    // or compare with an older one
+    auto &prev = mModificationTimes[ path ];
+    if( prev < time ) {
+        prev = time;
+        return true;
+    }
+    return false;
+}
 
 // This line tells Flint to actually create the application
-CINDER_APP( PixelPunchApp, RendererGl );
+CINDER_APP ( PixelPunchApp, RendererGl );
