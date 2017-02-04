@@ -202,6 +202,7 @@ void PixelPunchApp::fileDrop( FileDropEvent event)
 {
 	mSourceFileName = event.getFile( 0 ).string();
 	mSourceImage = loadImage(mSourceFileName);
+    mOrigImage = mSourceImage;
     mPrevTexture = gl::Texture::create( mSourceImage );
 	mPrevTexture->setMagFilter(GL_NEAREST);
 	mResultImage = Surface();
@@ -453,17 +454,22 @@ void PixelPunchApp::update()
 
 void PixelPunchApp::reloadImage()
 {
-    if (mSourceFileName != ""){
-        mOrigImage = loadImage(mSourceFileName);
-            if (fileHasChanged(mSourceFileName)){
-                mSourceImage = mOrigImage;
-                mPrevTexture = gl::Texture::create(mSourceImage);
-                mPrevTexture->setMagFilter(GL_NEAREST);
-                mResultImage = Surface();
-                mScaledSrc = Surface();
-            
-                mTransformUI.setShape(cinder::Rectf(0,0,(float)mSourceImage.getWidth(),(float)mSourceImage.getHeight()));
-        }
+    try {
+	    if (!mSourceFileName.empty()){
+	        mOrigImage = loadImage(mSourceFileName);
+	            if (fileHasChanged(mSourceFileName)){
+	                mSourceImage = mOrigImage;
+	                mPrevTexture = gl::Texture::create(mSourceImage);
+	                mPrevTexture->setMagFilter(GL_NEAREST);
+	                mResultImage = Surface();
+	                mScaledSrc = Surface();
+//                	mTransformUI.setShape(cinder::Rectf(0,0,(float)mSourceImage.getWidth(),(float)mSourceImage.getHeight()));
+	        }
+	    }
+	}
+    catch(...){
+    	console() << "You did something wrong, reload image didn't work as expected" << std::endl;
+        console() << "filename: " << mSourceFileName << std::endl;
     }
 }
 
