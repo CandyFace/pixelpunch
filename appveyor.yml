@@ -5,10 +5,12 @@ configuration: Release
 platform: x64
 install:
 - ps: Start-FileDownload 'https://libcinder.org/static/releases/cinder_0.9.0_vc2013.zip'
+  7z e cinder_0.9.0_vc2013.zip -oc:\project\cinder_0.9.0_vc2013
+
 before_build:
 - cmd: >-
     set "INCLUDE="C:\project\cinder_0.9.0_vc2013\include";%INCLUDE%"
-    set "LIB="C:\project\cinder_0.9.0_vc2013\lib\cinder_d.lib; C:\project\cinder_0.9.0_vc2013\lib\cinder.lib";%LIB%"
+    set "LIB="C:\project\cinder_0.9.0_vc2013\lib\msw";%LIB%"
     set UseEnv=true
 build:
   project: vc11/PixelPunch.vcxproj
