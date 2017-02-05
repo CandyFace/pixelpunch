@@ -16,4 +16,4 @@ before_install:
   # - brew install xctool
   - brew install Caskroom/cask/cinder
 
-script: xcodebuild clean build -project xcode/pixelpunch.xcodeproj -configuration “Build” -scheme pixelpunch
+script: xcodebuild clean build -project xcode/pixelpunch.xcodeproj HEADER_SEARCH_PATHS="/cinder/include"  -configuration “Build” -scheme pixelpunch
