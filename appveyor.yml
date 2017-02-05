@@ -6,7 +6,12 @@ platform: x64
 install:
 - ps: Start-FileDownload 'https://libcinder.org/static/releases/cinder_0.9.0_vc2013.zip'
 before_build:
-- ps: 
+- cmd: >-
+    set "INCLUDE="C:\cinder\include";%INCLUDE%"
+
+    set "LIB="C:\cinder\lib\cinder_d.lib; C:\cinder\lib\cinder.lib";%LIB%"
+
+    /p[roperty]:useenv=true
 build:
   project: vc11/PixelPunch.vcxproj
   verbosity: minimal
