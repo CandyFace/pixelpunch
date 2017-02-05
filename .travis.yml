@@ -16,4 +16,4 @@ before_install:
   - brew install xctool
   - brew install Caskroom/cask/cinder
 
-script: xctool -workspace pixelpunch.xcworkspace -scheme pixelpunch pixelpunch
+script: xctool -workspace xcode/pixelpunch.xcodeproj -scheme pixelpunch pixelpunch
