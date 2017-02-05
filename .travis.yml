@@ -13,7 +13,7 @@ compiler:
 
 before_install:
   - brew update
-  - brew install xctool
+  # - brew install xctool
   - brew install Caskroom/cask/cinder
 
-script: xctool -workspace xcode/pixelpunch.xcodeproj -scheme pixelpunch build
+script: xcodebuild clean build -project xcode/pixelpunch.xcodeproj -configuration “Build” -scheme pixelpunch
