@@ -7,7 +7,7 @@ install:
 - ps: >-
     Start-FileDownload 'https://libcinder.org/static/releases/cinder_0.9.0_vc2013.zip'
 
-    7z e cinder_0.9.0_vc2013.zip -oc:\project\cinder_0.9.0_vc2013
+    7z x cinder_0.9.0_vc2013.zip -oc:\project\cinder_0.9.0_vc2013
 before_build:
 - cmd: >-
     set "INCLUDE="C:\project\cinder_0.9.0_vc2013\include";%INCLUDE%"
