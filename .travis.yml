@@ -1,5 +1,19 @@
 language: cpp
 
+os:
+  - osx
+
 osx_image: xcode8.2
 xcode_project: pixelpunch.xcodeproj
 osx_sdk: macosx10.12
+
+compiler:
+  - clang
+  - gcc
+
+before_install:
+  - brew update
+  - brew install xctool
+  - brew install Caskroom/cask/cinder
+
+script: xctool -workspace pixelpunch.xcworkspace -scheme pixelpunch pixelpunch
