@@ -24,6 +24,14 @@ build_script:
   - cmd: call "%VS120COMNTOOLS%vsvars32.bat"
   - cmd: call MSBuild.exe c:\projects\pixelpunch\vc11\pixelpunch.vcxproj /p:Configuration=Release;Verbosity=minimal 
 
+after_build:
+  - cmd: dir
+  - cmd: call 7z.exe a c:\projects\pixelpunch\vc11\Release\pixelpunch
+
+artifacts:
+- path: c:\projects\pixelpunch\vc11\Release\pixelpunch.zip
+  name: pixelpunch
+
 deploy:
 - provider: GitHub
   release: PixelPunch
