@@ -53,63 +53,63 @@ class ColorVarControl;
 
 class SimpleGUI {
 private:
-	bool enabled;
-	cinder::vec2	mousePos;
-	std::vector<Control*> controls;
-	Control* selectedControl;
+    bool enabled;
+    cinder::vec2    mousePos;
+    std::vector<Control*> controls;
+    Control* selectedControl;
 
     ci::signals::ScopedConnection  cbMouseDown, cbMouseUp, cbMouseDrag;
 
-    void	init(ci::app::App* app);
+    void    init(ci::app::App* app);
 public:
-	static ci::ColorA darkColor;
-	static ci::ColorA lightColor;
+    static ci::ColorA darkColor;
+    static ci::ColorA lightColor;
     static ci::ColorA bgColor;
-	static ci::ColorA textColor;
-	static float spacing;
-	static ci::vec2 padding;
-	static ci::vec2 sliderSize;
-	static ci::vec2 labelSize;
-	static ci::vec2 separatorSize;
-	static ci::Font textFont;
+    static ci::ColorA textColor;
+    static float spacing;
+    static ci::vec2 padding;
+    static ci::vec2 sliderSize;
+    static ci::vec2 labelSize;
+    static ci::vec2 separatorSize;
+    static ci::Font textFont;
 
-	enum {
-		RGB,
-		HSV
-	};
+    enum {
+        RGB,
+        HSV
+    };
 public:
     SimpleGUI(ci::app::App* app);
-	bool	isSelected() { return selectedControl != NULL; }
-	std::vector<Control*>& getControls() { return controls; }
+    bool    isSelected() { return selectedControl != NULL; }
+    std::vector<Control*>& getControls() { return controls; }
 
-	bool	onMouseDown(ci::app::MouseEvent event);
-    bool	onMouseUp(ci::app::MouseEvent event);
-    bool	onMouseDrag(ci::app::MouseEvent event);
+    bool    onMouseDown(ci::app::MouseEvent event);
+    bool    onMouseUp(ci::app::MouseEvent event);
+    bool    onMouseDrag(ci::app::MouseEvent event);
 
-	void	draw();
-	void	dump();
-	void	save(std::string fileName = "");
-	void	load(std::string fileName = "");
+    void    draw();
+    void    dump();
+    void    save(std::string fileName = "");
+    void    load(std::string fileName = "");
 
-	bool	isEnabled();
-	void	setEnabled(bool state);
+    bool    isEnabled();
+    void    setEnabled(bool state);
 
-	FloatVarControl* 	addParam(const std::string& paramName, float* var, float min=0, float max=1, float defaultValue = 0);
-	IntVarControl*		addParam(const std::string& paramName, int* var, int min=0, int max=1, int defaultValue = 0);
-	BoolVarControl*		addParam(const std::string& paramName, bool* var, bool defaultValue = false, int groupId = -1);
-    ColorVarControl*	addParam(const std::string& paramName, ci::ColorA* var, ci::ColorA const defaultValue = ci::ColorA(0, 1, 1, 1), int colorModel = RGB);
-    TextureVarControl*	addParam(const std::string& paramName, ci::gl::Texture* var, int scale = 1, bool flipVert = false);
+    FloatVarControl*    addParam(const std::string& paramName, float* var, float min=0, float max=1, float defaultValue = 0);
+    IntVarControl*      addParam(const std::string& paramName, int* var, int min=0, int max=1, int defaultValue = 0);
+    BoolVarControl*     addParam(const std::string& paramName, bool* var, bool defaultValue = false, int groupId = -1);
+    ColorVarControl*    addParam(const std::string& paramName, ci::ColorA* var, ci::ColorA const defaultValue = ci::ColorA(0, 1, 1, 1), int colorModel = RGB);
+    TextureVarControl*  addParam(const std::string& paramName, ci::gl::Texture* var, int scale = 1, bool flipVert = false);
 
-	ButtonControl*		addButton(const std::string& buttonName);
-	LabelControl*		addLabel(const std::string& labelName);
-	SeparatorControl*	addSeparator();
-	ColumnControl*		addColumn(int x = 0, int y = 0);
-	PanelControl*		addPanel();
+    ButtonControl*      addButton(const std::string& buttonName);
+    LabelControl*       addLabel(const std::string& labelName);
+    SeparatorControl*   addSeparator();
+    ColumnControl*      addColumn(int x = 0, int y = 0);
+    PanelControl*       addPanel();
 
-	Control*			getControlByName(const std::string& name);
+    Control*            getControlByName(const std::string& name);
 
-    static ci::vec2		getStringSize(const std::string& str);
-    static ci::Rectf		getScaledWidthRectf(ci::Rectf rect, float scale);
+    static ci::vec2     getStringSize(const std::string& str);
+    static ci::Rectf        getScaledWidthRectf(ci::Rectf rect, float scale);
 };
 
 //-----------------------------------------------------------------------------
@@ -117,33 +117,33 @@ public:
 
 class Control {
 public:
-	enum Type {
-		FLOAT_VAR,
-		INT_VAR,
-		BOOL_VAR,
-		COLOR_VAR,
-		TEXTURE_VAR,
-		BUTTON,
-		LABEL,
-		SEPARATOR,
-		COLUMN,
-		PANEL
-	};
+    enum Type {
+        FLOAT_VAR,
+        INT_VAR,
+        BOOL_VAR,
+        COLOR_VAR,
+        TEXTURE_VAR,
+        BUTTON,
+        LABEL,
+        SEPARATOR,
+        COLUMN,
+        PANEL
+    };
 
-	ci::vec2	position;
-	ci::Rectf	activeArea;
-	ci::ColorA	bgColor;
-	Type	type;
-	std::string name;
-	SimpleGUI* parentGui;
+    ci::vec2    position;
+    ci::Rectf   activeArea;
+    ci::ColorA  bgColor;
+    Type    type;
+    std::string name;
+    SimpleGUI* parentGui;
 
-	Control();
-	virtual ~Control() {};
-	void setBackgroundColor(ci::ColorA color);
-	void notifyUpdateListeners();
-	virtual ci::vec2 draw(ci::vec2 pos) = 0;
-	virtual std::string toString() { return ""; };
-	virtual void fromString(std::string& strValue) {};
+    Control();
+    virtual ~Control() {};
+    void setBackgroundColor(ci::ColorA color);
+    void notifyUpdateListeners();
+    virtual ci::vec2 draw(ci::vec2 pos) = 0;
+    virtual std::string toString() { return ""; };
+    virtual void fromString(std::string& strValue) {};
     virtual void onMouseDown(ci::app::MouseEvent event) {};
     virtual void onMouseUp(ci::app::MouseEvent event) {};
     virtual void onMouseDrag(ci::app::MouseEvent event) {};
@@ -153,16 +153,16 @@ public:
 
 class FloatVarControl : public Control {
 public:
-	float* var;
-	float min;
-	float max;
+    float* var;
+    float min;
+    float max;
 public:
-	FloatVarControl(const std::string& name, float* var, float min=0, float max=1, float defaultValue = 0);
-	float getNormalizedValue();
-	void setNormalizedValue(float value);
-	ci::vec2 draw(ci::vec2 pos);
-	std::string toString();
-	void fromString(std::string& strValue);
+    FloatVarControl(const std::string& name, float* var, float min=0, float max=1, float defaultValue = 0);
+    float getNormalizedValue();
+    void setNormalizedValue(float value);
+    ci::vec2 draw(ci::vec2 pos);
+    std::string toString();
+    void fromString(std::string& strValue);
     void onMouseDown(ci::app::MouseEvent event);
     void onMouseDrag(ci::app::MouseEvent event);
 };
@@ -171,16 +171,16 @@ public:
 
 class IntVarControl : public Control {
 public:
-	int* var;
-	int min;
-	int max;
+    int* var;
+    int min;
+    int max;
 public:
-	IntVarControl(const std::string& name, int* var, int min=0, int max=1, int defaultValue = 0);
-	float getNormalizedValue();
-	void setNormalizedValue(float value);
-	ci::vec2 draw(ci::vec2 pos);
-	std::string toString();
-	void fromString(std::string& strValue);
+    IntVarControl(const std::string& name, int* var, int min=0, int max=1, int defaultValue = 0);
+    float getNormalizedValue();
+    void setNormalizedValue(float value);
+    ci::vec2 draw(ci::vec2 pos);
+    std::string toString();
+    void fromString(std::string& strValue);
     void onMouseDown(ci::app::MouseEvent event);
     void onMouseDrag(ci::app::MouseEvent event);
 };
@@ -189,13 +189,13 @@ public:
 
 class BoolVarControl : public Control {
 public:
-	bool* var;
-	int groupId;
+    bool* var;
+    int groupId;
 public:
-	BoolVarControl(const std::string& name, bool* var, bool defaultValue, int groupId);
-	ci::vec2 draw(ci::vec2 pos);
-	std::string toString();
-	void fromString(std::string& strValue);
+    BoolVarControl(const std::string& name, bool* var, bool defaultValue, int groupId);
+    ci::vec2 draw(ci::vec2 pos);
+    std::string toString();
+    void fromString(std::string& strValue);
     void onMouseDown(ci::app::MouseEvent event);
 };
 
@@ -203,18 +203,18 @@ public:
 
 class ColorVarControl : public Control {
 public:
-	ci::ColorA* var;
-	ci::Rectf	activeArea1;
-	ci::Rectf	activeArea2;
-	ci::Rectf	activeArea3;
-	ci::Rectf	activeArea4;
-	int		activeTrack;
-	int		colorModel;
+    ci::ColorA* var;
+    ci::Rectf   activeArea1;
+    ci::Rectf   activeArea2;
+    ci::Rectf   activeArea3;
+    ci::Rectf   activeArea4;
+    int     activeTrack;
+    int     colorModel;
 public:
-	ColorVarControl(const std::string& name, ci::ColorA* var, ci::ColorA defaultValue, int colorModel);
-	ci::vec2 draw(ci::vec2 pos);
-	std::string toString();	//saved as "r g b a"
-	void fromString(std::string& strValue); //expecting "r g b a"
+    ColorVarControl(const std::string& name, ci::ColorA* var, ci::ColorA defaultValue, int colorModel);
+    ci::vec2 draw(ci::vec2 pos);
+    std::string toString(); //saved as "r g b a"
+    void fromString(std::string& strValue); //expecting "r g b a"
     void onMouseDown(ci::app::MouseEvent event);
     void onMouseDrag(ci::app::MouseEvent event);
 };
@@ -223,23 +223,23 @@ public:
 
 class ButtonControl : public Control {
 private:
-	bool pressed;
-    ci::CallbackMgr<bool (ci::app::MouseEvent)>		callbacksClick;
+    bool pressed;
+    ci::CallbackMgr<bool (ci::app::MouseEvent)>     callbacksClick;
 public:
-	ButtonControl(const std::string& name);
-	ci::vec2 draw(ci::vec2 pos);
+    ButtonControl(const std::string& name);
+    ci::vec2 draw(ci::vec2 pos);
     void onMouseDown(ci::app::MouseEvent event);
     void onMouseUp(ci::app::MouseEvent event);
 
-	//! Registers a callback for Click events. Returns a unique identifier which can be used as a parameter to unregisterClick().
-    ci::CallbackId		registerClick( std::function<bool (ci::app::MouseEvent)> callback ) { return callbacksClick.registerCb( callback ); }
-	//! Registers a callback for Click events. Returns a unique identifier which can be used as a parameter to unregisterClick().
-	template<typename T>
-    ci::CallbackId		registerClick( T *obj, bool (T::*callback)(ci::app::MouseEvent) ) { return callbacksClick.registerCb( std::bind1st( std::mem_fun( callback ), obj ) ); }
-	//! Unregisters a callback for Click events.
-	void			unregisterClick( ci::CallbackId id ) { callbacksClick.unregisterCb( id ); }
+    //! Registers a callback for Click events. Returns a unique identifier which can be used as a parameter to unregisterClick().
+    ci::CallbackId      registerClick( std::function<bool (ci::app::MouseEvent)> callback ) { return callbacksClick.registerCb( callback ); }
+    //! Registers a callback for Click events. Returns a unique identifier which can be used as a parameter to unregisterClick().
+    template<typename T>
+    ci::CallbackId      registerClick( T *obj, bool (T::*callback)(ci::app::MouseEvent) ) { return callbacksClick.registerCb( std::bind1st( std::mem_fun( callback ), obj ) ); }
+    //! Unregisters a callback for Click events.
+    void            unregisterClick( ci::CallbackId id ) { callbacksClick.unregisterCb( id ); }
 
-	void fireClick();
+    void fireClick();
 
 };
 
@@ -247,8 +247,8 @@ public:
 
 class LabelControl : public Control {
 public:
-	LabelControl(const std::string& name);
-	void setText(const std::string& text);
+    LabelControl(const std::string& name);
+    void setText(const std::string& text);
     ci::vec2 draw(ci::vec2 pos);
 };
 
@@ -256,27 +256,27 @@ public:
 
 class SeparatorControl : public Control {
 public:
-	SeparatorControl();
-	ci::vec2 draw(ci::vec2 pos);
+    SeparatorControl();
+    ci::vec2 draw(ci::vec2 pos);
 };
 
 //-----------------------------------------------------------------------------
 
 class ColumnControl : public Control {
 public:
-	int x;
-	int y;
-	ColumnControl(int x = 0, int y = 0);
-	ci::vec2 draw(ci::vec2 pos);
+    int x;
+    int y;
+    ColumnControl(int x = 0, int y = 0);
+    ci::vec2 draw(ci::vec2 pos);
 };
 
 //-----------------------------------------------------------------------------
 
 class PanelControl : public Control {
 public:
-	bool enabled;
-	PanelControl();
-	ci::vec2 draw(ci::vec2 pos);
+    bool enabled;
+    PanelControl();
+    ci::vec2 draw(ci::vec2 pos);
 };
 
 
@@ -284,11 +284,11 @@ public:
 
 class TextureVarControl : public Control {
 public:
-	ci::gl::Texture* var;
-	float scale;
-	bool flipVert;
-	TextureVarControl(const std::string& name, ci::gl::Texture* var, int scale, bool flipVert = false);
-	ci::vec2 draw(ci::vec2 pos);
+    ci::gl::Texture* var;
+    float scale;
+    bool flipVert;
+    TextureVarControl(const std::string& name, ci::gl::Texture* var, int scale, bool flipVert = false);
+    ci::vec2 draw(ci::vec2 pos);
 };
 
 //-----------------------------------------------------------------------------
