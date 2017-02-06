@@ -26,10 +26,10 @@ build_script:
 
 after_build:
   - cmd: dir
-  - cmd: call 7z.exe a c:\projects\pixelpunch\vc11\Release\pixelpunch
+  - cmd: call 7z.exe a vc11\Release\pixelpunch
 
 artifacts:
-- path: c:\projects\pixelpunch\vc11\Release\pixelpunch.zip
+- path: vc11\Release\pixelpunch.zip
   name: pixelpunch
 
 deploy:
