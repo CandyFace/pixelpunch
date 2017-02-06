@@ -1,7 +1,9 @@
 version: 0.{build}
 pull_requests:
   do_not_increment_build_number: true
-image: Visual Studio 2013
+os: Visual Studio 2015
+image: Visual Studio 2015
+
 configuration: Release
 platform: x64
 install:
@@ -18,4 +20,5 @@ build:
 build_script:
   - cmd: set INCLUDE=C:\projects\cinder_0.9.0_vc2013\include;%INCLUDE%
   - cmd: set LIB=C:\projects\cinder_0.9.0_vc2013\lib;%LIB%
+  - cmd: call "%VS140COMNTOOLS%vsvars32.bat"
   - cmd: call MSBuild.exe c:\projects\pixelpunch\vc11\pixelpunch.vcxproj /p:Configuration=Release;Verbosity=minimal 
