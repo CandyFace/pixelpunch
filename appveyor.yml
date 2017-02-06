@@ -14,10 +14,19 @@ install:
 before_build:
 - cmd: >-
     dir
-    cd \projects\cinder_0.9_0_vc2013
+    
+    cd \cinder_0.9_0_vc2013
+    
     dir
+    
     cd ..\
+
+    echo "CHECKING LIB PATH"
+    
     echo %LIB%
+    
+    echo "CHECKING INCLUDE PATH"
+    
     echo %INCLUDE%
 build:
   project: vc11/PixelPunch.vcxproj
