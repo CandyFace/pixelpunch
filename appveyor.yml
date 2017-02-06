@@ -18,4 +18,4 @@ build:
 build_script:
   - cmd: set INCLUDE=C:\projects\cinder_0.9.0_vc2013\include;%INCLUDE%
   - cmd: set C:\projects\cinder_0.9.0_vc2013\lib;%LIB%
-  - cmd: MSBuild.exe vc11\PixelPunch.vcxproj /p:VCBuildToolPath=
+  - cmd: call MSBuild.exe c:\projects\pixelpunch\vc11\pixelpunch.vcxproj /p:Configuration=Release;Verbosity=minimal 
