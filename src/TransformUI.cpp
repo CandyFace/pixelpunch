@@ -1,6 +1,6 @@
 #include "TransformUI.h"
 #include "cinder/gl/gl.h"
-#include "/cinder/app/App.h"
+#include "cinder/app/App.h"
 using namespace ci;
 using namespace cinder::app;
 
