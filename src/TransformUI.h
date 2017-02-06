@@ -34,7 +34,7 @@ class TransformUI
     static const int TOP_RIGHT = 1;
     static const int BOTTOM_RIGHT = 2;
     static const int BOTTOM_LEFT = 3;
-    const float lockedAngles[9] = {0.0f, 0.785398f, 1.5708f, 2.35619f, 3.14159f, 3.92699f, 4.71239f, 5.49779f, 6.28319f};
+    static const float lockedAngles[9];
 
     static const int TOP = 0;
     static const int RIGHT = 1;

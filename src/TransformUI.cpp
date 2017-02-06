@@ -19,6 +19,12 @@ TransformUI::TransformUI(void) :
 {
 }
 
+const float TransformUI::lockedAngles[9] =  {0.0f, 0.785398f,
+                                            1.5708f, 2.35619f,
+                                            3.14159f, 3.92699f,
+                                            4.71239f, 5.49779f,
+                                            6.28319f};
+
 void TransformUI::init()
 {
     for (int i = 0; i < 4; i++)
