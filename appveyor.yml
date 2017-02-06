@@ -25,9 +25,9 @@ build_script:
   - cmd: call MSBuild.exe c:\projects\pixelpunch\vc11\pixelpunch.vcxproj /p:Configuration=Release;Verbosity=minimal 
 
 after_build:
-  - cmd: cd vc11\Release
+  - cmd: cd vc11
   - cmd: dir
-  - cmd: call 7z.exe a -tzip pixelpunch.zip vc11\Release
+  - cmd: call 7z.exe a -tzip pixelpunch.zip \Release
 
 artifacts:
 - path: vc11\Release\pixelpunch.zip
