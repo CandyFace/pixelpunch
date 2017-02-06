@@ -6,31 +6,21 @@ platform: x64
 environment:
   INCLUDE: C:\projects\cinder_0.9.0_vc2013\include
   LIB:     C:\projects\cinder_0.9.0_vc2013\lib
+
+cache:
+- C:\projects\cinder_0.9.0_vc2013 -> appveyor.yml
 install:
 - ps: >-
     Start-FileDownload 'https://libcinder.org/static/releases/cinder_0.9.0_vc2013.zip'
 
     7z x cinder_0.9.0_vc2013.zip -oc:\projects\
-# before_build:
-# - cmd: >-
-#     dir
-    
-#     cd ..
-    
-#     dir
-    
-#     cd cinder_0.9.0_vc2013
+before_build:
+- cmd: >-
+    set UseEnv=true
 
-#     echo "CHECKING LIB PATH"
-    
-#     echo %LIB%
-    
-#     echo "CHECKING INCLUDE PATH"
-    
-#     echo %INCLUDE%
 build:
   project: vc11/PixelPunch.vcxproj
   verbosity: minimal
 
-build_script:
-  - cmd: call MSBuild.exe c:\projects\pixelpunch\vc11\pixelpunch.vcxproj /p:Configuration=Release /p:UseEnv=true;Verbosity=minimal
+# build_script:
+  # - cmd: call MSBuild.exe c:\projects\pixelpunch\vc11\PixelPunch.vcxproj /p:Configuration=Release /p:UseEnv=true;Verbosity=minimal
