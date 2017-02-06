@@ -6,12 +6,16 @@ configuration: Release
 platform: x64
 install:
 - ps: Start-FileDownload 'https://libcinder.org/static/releases/cinder_0.9.0_vc2013.zip'
-environment:
-  INCLUDE: C:\projects\cinder_0.9.0_vc2013\include
-  LIB: C:\projects\cinder_0.9.0_vc2013\lib
+
 cache: C:\projects\cinder_0.9.0_vc2013
+
 before_build:
 - cmd: set UseEnv=true
 build:
   project: vc11/PixelPunch.vcxproj
   verbosity: minimal
+
+build_script:
+  - cmd: set INCLUDE=C:\projects\cinder_0.9.0_vc2013\include;%INCLUDE%
+  - cmd: set C:\projects\cinder_0.9.0_vc2013\lib;%LIB%
+  - cmd: MSBuild.exe vc11\PixelPunch.vcxproj /p:VCBuildToolPath=
