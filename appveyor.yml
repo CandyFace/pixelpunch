@@ -3,16 +3,15 @@ pull_requests:
   do_not_increment_build_number: true
 configuration: Release
 platform: x64
+environment:
+  INCLUDE: C:\projects\cinder_0.9.0_vc2013\include
+  LIB:     C:\projects\cinder_0.9.0_vc2013\lib
+  
 install:
 - ps: >-
     Start-FileDownload 'https://libcinder.org/static/releases/cinder_0.9.0_vc2013.zip'
 
     7z x cinder_0.9.0_vc2013.zip -oc:\projects\
-before_build:
-- cmd: >-
-    set INCLUDE=C:\projects\cinder_0.9.0_vc2013\include;%INCLUDE%
-    set LIB=C:\projects\cinder_0.9.0_vc2013\lib;%LIB%
-    set UseEnv=true
 build:
   project: vc11/PixelPunch.vcxproj
   verbosity: minimal
