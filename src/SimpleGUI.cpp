@@ -59,13 +59,9 @@ ci::vec2 SimpleGUI::separatorSize = ci::vec2(125, 1);
     void SimpleGUI::init(ci::app::App* app) {
     textFont = ci::Font("Arial", 12);
     selectedControl = NULL;
-    
-    auto onMouseDown = std::bind(&SimpleGUI::onMouseDown, this, std::placeholders::_1);
-    auto onMouseUp = std::bind(&SimpleGUI::onMouseUp, this, std::placeholders::_1);
-    auto onMouseDrag = std::bind(&SimpleGUI::onMouseDrag, this, std::placeholders::_1);
-    cbMouseDown = app->getWindow()->getSignalMouseDown().connect(onMouseDown);
-    cbMouseUp = app->getWindow()->getSignalMouseUp().connect(onMouseUp);
-    cbMouseDrag = app->getWindow()->getSignalMouseDrag().connect(onMouseDrag);
+    cbMouseDown = app->getWindow()->getSignalMouseDown().connect(std::bind<bool>(&SimpleGUI::onMouseDown, this, std::placeholders::_1));
+    cbMouseUp = app->getWindow()->getSignalMouseUp().connect(std::bind<bool>(&SimpleGUI::onMouseUp, this, std::placeholders::_1));
+    cbMouseDrag = app->getWindow()->getSignalMouseDrag().connect(std::bind<bool>(&SimpleGUI::onMouseDrag, this, std::placeholders::_1));
 }
 
 FloatVarControl* SimpleGUI::addParam(const std::string& paramName, float* var, float min, float max, float defaultValue) {
