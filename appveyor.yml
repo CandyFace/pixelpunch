@@ -28,5 +28,5 @@ deploy:
 - provider: GitHub
   release: PixelPunch
   auth_token:
-    secure: N7E1ysSWSm+PWLxisnr3OSnWOdaNNtDs8pe/G4AhB80=
+    secure: EGid6FaGU1E53vWNIzl/cAq6vGzNnuIa8FHfjIepytAE96DOgHtYv5Gi6o8JKS9a
   draft: true
