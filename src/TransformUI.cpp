@@ -96,7 +96,7 @@ bool TransformUI::mouseMove(MouseEvent evt)
     mRightMouseDown = false;
 
     // Make sure we can't interact with image on GUI
-    if (pos.x >= 135 && pos.x < getWindowWidth())
+    if (pos.x >= 135 && pos.x < ci::app::getWindowWidth())
     {
         // A handle to drag?
         for (int i = 0; i < 4; i++)
