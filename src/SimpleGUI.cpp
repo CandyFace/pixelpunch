@@ -59,9 +59,9 @@ ci::vec2 SimpleGUI::separatorSize = ci::vec2(125, 1);
     void SimpleGUI::init(ci::app::App* app) {
     textFont = ci::Font("Arial", 12);
     selectedControl = NULL;
-    auto onMouseDown = [this](ci::app::MouseEvent event) -> bool { SimpleGUI::onMouseDown(event); return false;};
-    auto onMouseUp = [this](ci::app::MouseEvent event) -> bool { SimpleGUI::onMouseUp(event); return false;};
-    auto onMouseDrag = [this](ci::app::MouseEvent event) -> bool { SimpleGUI::onMouseDrag(event); return false;};
+    auto onMouseDown = [this](ci::app::MouseEvent event) -> void { SimpleGUI::onMouseDown(event);};
+    auto onMouseUp = [this](ci::app::MouseEvent event) -> void { SimpleGUI::onMouseUp(event);};
+    auto onMouseDrag = [this](ci::app::MouseEvent event) -> void { SimpleGUI::onMouseDrag(event);};
     cbMouseDown = app->getWindow()->getSignalMouseDown().connect(onMouseDown);
     cbMouseUp = app->getWindow()->getSignalMouseUp().connect(onMouseUp);
     cbMouseDrag = app->getWindow()->getSignalMouseDrag().connect(onMouseDrag);
