@@ -23,3 +23,10 @@ build_script:
   - cmd: set LIB=C:\projects\cinder_0.9.0_vc2013\lib\msw\x86;%LIB%
   - cmd: call "%VS120COMNTOOLS%vsvars32.bat"
   - cmd: call MSBuild.exe c:\projects\pixelpunch\vc11\pixelpunch.vcxproj /p:Configuration=Release;Verbosity=minimal 
+
+deploy:
+- provider: GitHub
+  release: PixelPunch
+  auth_token:
+    secure: N7E1ysSWSm+PWLxisnr3OSnWOdaNNtDs8pe/G4AhB80=
+  draft: true
