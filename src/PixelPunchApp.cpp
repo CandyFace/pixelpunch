@@ -1,5 +1,6 @@
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
+#include "cinder/gl/gl.h"
 #include "cinder/Rand.h"
 #include "cinder/Surface.h"
 #include "cinder/gl/Texture.h"
@@ -569,6 +570,7 @@ bool PixelPunchApp::fileHasChanged( std::string path )
     // or compare with an older one
     auto &prev = mModificationTimes[ path ];
     if( prev < time ) {
+    {
         prev = time;
         return true;
     }
@@ -576,4 +578,4 @@ bool PixelPunchApp::fileHasChanged( std::string path )
 }
 
 // This line tells Flint to actually create the application
-CINDER_APP ( PixelPunchApp, RendererGl );
+CINDER_APP(PixelPunchApp, RendererGl);
