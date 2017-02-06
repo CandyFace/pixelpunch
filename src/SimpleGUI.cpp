@@ -59,15 +59,13 @@ ci::vec2 SimpleGUI::separatorSize = ci::vec2(125, 1);
     void SimpleGUI::init(ci::app::App* app) {
     textFont = ci::Font("Arial", 12);
     selectedControl = NULL;
-#if defined(CINDER_WINRT) ||(defined(_MSC_VER) &&(_MSC_VER >= 1900))
-    cbMouseDown = app->getWindow()->getSignalMouseDown().connect(std::bind(&SimpleGUI::onMouseDown, this, std::_1));
-    cbMouseUp = app->getWindow()->getSignalMouseUp().connect(std::bind(&SimpleGUI::onMouseUp, this, std::std::_1));
-    cbMouseDrag = app->getWindow()->getSignalMouseDrag().connect(std::bind(&SimpleGUI::onMouseDrag, this, std::std::_1));
-#else
-    cbMouseDown = app->getWindow()->getSignalMouseDown().connect(std::bind(&SimpleGUI::onMouseDown, this, std::placeholders::_1));
-    cbMouseUp = app->getWindow()->getSignalMouseUp().connect(std::bind(&SimpleGUI::onMouseUp, this, std::placeholders::_1));
-    cbMouseDrag = app->getWindow()->getSignalMouseDrag().connect(std::bind(&SimpleGUI::onMouseDrag, this, std::placeholders::_1));
-#endif
+    
+    auto onMouseDown = std::bind(&SimpleGUI::onMouseDown, this, std::placeholders::_1);
+    auto onMouseUp = std::bind(&SimpleGUI::onMouseUp, this, std::placeholders::_1);
+    auto onMouseDrag = std::bind(&SimpleGUI::onMouseDrag, this, std::placeholders::_1);
+    cbMouseDown = app->getWindow()->getSignalMouseDown().connect(onMouseDown);
+    cbMouseUp = app->getWindow()->getSignalMouseUp().connect(onMouseUp);
+    cbMouseDrag = app->getWindow()->getSignalMouseDrag().connect(onMouseDrag);
 }
 
 FloatVarControl* SimpleGUI::addParam(const std::string& paramName, float* var, float min, float max, float defaultValue) {
@@ -386,11 +384,11 @@ void FloatVarControl::fromString(std::string& strValue) {
     *var = boost::lexical_cast<float>(strValue);
 }
 
-    void FloatVarControl::onMouseDown(ci::app::MouseEvent event) {
+void FloatVarControl::onMouseDown(ci::app::MouseEvent event) {
     onMouseDrag(event);
 }
 
-    void FloatVarControl::onMouseDrag(ci::app::MouseEvent event) {
+void FloatVarControl::onMouseDrag(ci::app::MouseEvent event) {
     float value = (event.getPos().x - activeArea.x1)/(activeArea.x2 - activeArea.x1);
     value = ci::math<float>::max(0.0, ci::math<float>::min(value, 1.0));
     setNormalizedValue(value);
