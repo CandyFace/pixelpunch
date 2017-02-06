@@ -31,6 +31,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include "SimpleGUI.h"
+#include "cinder/gl/gl.h"
 #include "cinder/Utilities.h"
 #include "cinder/Font.h"
 #include "cinder/CinderMath.h"
