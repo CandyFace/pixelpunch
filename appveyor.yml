@@ -10,8 +10,8 @@ install:
     7z x cinder_0.9.0_vc2013.zip -oc:\projects\
 before_build:
 - cmd: >-
-    set "INCLUDE="C:\projects\cinder_0.9.0_vc2013\include";%INCLUDE%"
-    set "LIB="C:\projects\cinder_0.9.0_vc2013\lib\msw";%LIB%"
+    set INCLUDE=C:\projects\cinder_0.9.0_vc2013\include;%INCLUDE%
+    set LIB=C:\projects\cinder_0.9.0_vc2013\lib;%LIB%
     set UseEnv=true
 build:
   project: vc11/PixelPunch.vcxproj
