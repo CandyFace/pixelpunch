@@ -27,7 +27,7 @@ build_script:
 after_build:
   - cmd: cd vc11
   - cmd: dir
-  - cmd: call 7z.exe a -tzip pixelpunch.zip \Release
+  - cmd: call 7z.exe a -tzip pixelpunch.zip Release\*
 
 artifacts:
 - path: vc11\Release\pixelpunch.zip
