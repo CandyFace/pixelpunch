@@ -18,6 +18,9 @@ before_install:
 
 script: xcodebuild clean build -project xcode/pixelpunch.xcodeproj OTHER_LDFLAGS="/Applications/cinder_0.9.0_mac/lib/libcinder_d.a /Applications/cinder_0.9.0_mac/lib/libcinder.a" HEADER_SEARCH_PATHS="/Applications/cinder_0.9.0_mac/include"  -configuration “Build” -scheme pixelpunch
 
+after_success:
+  - sh set_tags.sh
+
 before_deploy:
   - cd build/
   - zip -r "pixelpunch_mac.zip" Release/
