@@ -1,0 +1,40 @@
+version: 0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+os: Visual Studio 2013
+image: Visual Studio 2013
+
+configuration: Release
+platform: x86
+install:
+- ps: Start-FileDownload 'https://libcinder.org/static/releases/cinder_0.9.0_vc2013.zip'
+- ps: 7z x cinder_0.9.0_vc2013.zip -oc:\projects\
+
+# cache: C:\projects\cinder_0.9.0_vc2013
+
+before_build:
+- cmd: set UseEnv=true
+build:
+  project: vc11/PixelPunch.vcxproj
+  verbosity: minimal
+
+build_script:
+  - cmd: set INCLUDE=C:\projects\cinder_0.9.0_vc2013\include;%INCLUDE%
+  - cmd: set LIB=C:\projects\cinder_0.9.0_vc2013\lib\msw\x86;%LIB%
+  - cmd: call "%VS120COMNTOOLS%vsvars32.bat"
+  - cmd: call MSBuild.exe c:\projects\pixelpunch\vc11\pixelpunch.vcxproj /p:Configuration=Release;Verbosity=minimal 
+
+after_build:
+  - cmd: cd vc11
+  - cmd: call 7z.exe a -tzip pixelpunch_win.zip Release\*
+
+artifacts:
+- path: vc11\pixelpunch_win.zip
+  name: pixelpunch
+
+deploy:
+- provider: GitHub
+  release: PixelPunch
+  auth_token:
+    secure: EGid6FaGU1E53vWNIzl/cAq6vGzNnuIa8FHfjIepytAE96DOgHtYv5Gi6o8JKS9a
+  draft: true

@@ -1,0 +1,43 @@
+language: cpp
+
+os:
+  - osx
+
+osx_image: xcode8.2
+xcode_project: pixelpunch.xcodeproj
+osx_sdk: macosx10.12
+
+compiler:
+  - clang
+  - gcc
+
+before_install:
+  - brew update
+  # - brew install xctool
+  - brew install Caskroom/cask/cinder
+
+script: xcodebuild clean build -project xcode/pixelpunch.xcodeproj OTHER_LDFLAGS="/Applications/cinder_0.9.0_mac/lib/libcinder_d.a /Applications/cinder_0.9.0_mac/lib/libcinder.a" HEADER_SEARCH_PATHS="/Applications/cinder_0.9.0_mac/include"  -configuration “Build” -scheme pixelpunch
+
+after_success:
+  - echo -e "Starting to tag commit.\n"
+  - git config --global user.email "travis@travis-ci.org"
+  - git config --global user.name "Travis"
+  - export GIT_TAG=build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d-%H-%M-%S")-$TRAVIS_BUILD_NUMBER
+  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
+  - git push origin $GIT_TAG
+
+before_deploy:
+  - cd build/
+  - zip -r "pixelpunch_mac.zip" Release/
+
+deploy:
+  provider: releases
+  api_key: 
+    secure: "BGIHY1OlXnn9Ioe7OlYCL0Rl5ZxmRgQkF2a+fNL/lT0mWLtJeMhssWxW3Y2g62EmUF0Z/xq/milSfMtm9bC0YVrrbOrzPDQIW9QMBSSYl+G+PY+KzZ3CYIZJbowXZanPEgl4Ql5PnSMp39iDHMAyzjUz+eo3pSSVIUPkFABSADAWdPXYfOJpHaU2nZ2Ew8eQ4/lCWrs2Dj9Ay+V30CGuZpNAc5/J0/6qvBnHvi4iBAZBwgR22V4VRdDzTZHTWbo4Ii5S+mROCsXEuEDzpyBEdJrWeAZnqGXdS+sY4/Fbzu+Hiv4h7AHCrEarSteShk5A8zBKu+mayTm13rW5tD+WoUUufT4K/Ql1lpXEKDudn+07d75idlFSkfrmmJfIRZCqwxsZREzE15zib1EhTi27VZh/FI8XoEnaVGDhMuvJX3wkLG/EFThPGoQhtaYnd7wPnoE2ZF3lcE//4ew6N7UH3BT3sNFwjxixvjWfX/Ni++DhlH5dBqLUyRGih/JTUKifW585ZS6KcEOxWXf3nyy4zp5TaxpznnX4ljY9mL8ywYLozLPXqG2Vie2ernYlLYUNTzynmIyhVF/3DTIkgMETfbgaCDmGFbYJ+OWDYHcQpLSATdO3GlXRyVJ0uKErGOMMgG+lvEAgpUMUxQOifUa6vdCO06QKrPO255YCMbzbjbo="
+  file: xcode/build/Release/pixelpunch_mac.zip
+  skip_cleanup: true
+  draft: true
+  on:
+    tags: true
+    all_branches: true
+    repo: CandyFace/pixelpunch
