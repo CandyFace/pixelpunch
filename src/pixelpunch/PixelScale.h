@@ -3,22 +3,22 @@
 #include "cinder/Cinder.h"
 #include "cinder/Surface.h"
 
-namespace pp 
+namespace pp
 {
-	enum ScaleMethod {
-		SM_NONE,
-		
-		SM_SCALE2x, 
-		SM_SCALE3x,
-		SM_SCALE4x,
+    enum ScaleMethod {
+        SM_NONE,
 
-		SM_EAGLE2x,
+        SM_SCALE2x,
+        SM_SCALE3x,
+        SM_SCALE4x,
 
-		SM_SCALE2x_HQ,
-		SM_SCALE3x_HQ,
-		SM_SCALE4x_HQ
-	};
-	typedef enum ScaleMethod ScaleMethod;
+        SM_EAGLE2x,
 
-	cinder::Surface scale(cinder::Surface& source, ScaleMethod method);
-}
+        SM_SCALE2x_HQ,
+        SM_SCALE3x_HQ,
+        SM_SCALE4x_HQ
+    };
+    typedef enum ScaleMethod ScaleMethod;
+
+    cinder::Surface scale(cinder::Surface& source, ScaleMethod method);
+}  // namespace pp
