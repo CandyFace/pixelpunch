@@ -30,3 +30,4 @@ deploy:
   draft: true
   on:
     tags: true
+    all_branches: true
