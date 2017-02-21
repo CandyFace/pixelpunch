@@ -18,13 +18,13 @@ before_install:
 
 script: xcodebuild clean build -project xcode/pixelpunch.xcodeproj OTHER_LDFLAGS="/Applications/cinder_0.9.0_mac/lib/libcinder_d.a /Applications/cinder_0.9.0_mac/lib/libcinder.a" HEADER_SEARCH_PATHS="/Applications/cinder_0.9.0_mac/include"  -configuration “Build” -scheme pixelpunch
 
-after_success:
-  - echo -e "Starting to tag commit.\n"
-  - git config --global user.email "travis@travis-ci.org"
-  - git config --global user.name "Travis"
-  - export GIT_TAG=build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d-%H-%M-%S")-$TRAVIS_BUILD_NUMBER
-  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
-  - git push origin $GIT_TAG
+# after_success:
+#   - echo -e "Starting to tag commit.\n"
+#   - git config --global user.email "travis@travis-ci.org"
+#   - git config --global user.name "Travis CI"
+#   - export GIT_TAG=build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d-%H-%M-%S")-$TRAVIS_BUILD_NUMBER
+#   - git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
+#   - git push origin $GIT_TAG
 
 before_deploy:
   - cd /Users/travis/build/CandyFace/pixelpunch/xcode/build
