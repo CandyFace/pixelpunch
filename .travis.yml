@@ -27,6 +27,8 @@ deploy:
   provider: releases
   file: xcode/build/Release/pixelpunch_mac.zip
   skip_cleanup: true
+  api_key:
+    secure: euGkJMldfcKJiPPQ/svCPANrPqUSxrpun0i3QkWJQ4VrxzZrs5jms3G8H2VBxaiDxOmuwbFjNfLmh0ItTjPZeZFbStw3BU32fy2HMuQH+I46tGtnIxfLaRP7/8BUmjdWsHLQ9SSatv+Z797oKx8fjZWiXgPf9WoHTN3WqHYAdW575A99t9zEPIkM7MBvL/yr8wvfUPxX9IpF1zcK/YKuAwzK2xa89Vs9vEJGZ+CSZrtGyOeQtrFJb4Q1qR/XHau0DNAqRBcYVe20tZHLI/nt2OlOfmIIjRkXvOHzmACQkcLIU/jfII5K5cxJrN0ee7vVfdF5WxIBoeQHV0tKUGAyqfzohE6boDzct7HAo9GrX2QsyEYd1dcCdKdQPcCZjPM50EnP/1StBajzN+0pqw/EBMnPtV+pdQsZaggcplzHBSUz3vXTwuyxyV7/5WaBPma5mb3IfW2hSVhJXrSuR6UmCDbwC8qux4beG54qIcG6z1NidpAFTnQ5jpW8ABHwy5RK2FeTvIJZ4l7X3SMmghAOdtu0Wj1xqQi5+0oqMW0mUeE7e9RjiAq02IrWBqdQ2OVThmy56hDV+QsY3tlj8JvgF7TUezrvfSEI7VpwBdBCSmMY4VmK7rmfrTZY7NPP+O5kIslD+UBeVeo7Nig0rEiwXGSSR/OicTAQZN9XgWdlB+8=
   draft: true
   on:
     tags: true
