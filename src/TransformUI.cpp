@@ -19,11 +19,11 @@ TransformUI::TransformUI(void) :
 {
 }
 
-const float TransformUI::lockedAngles[9] =  {0.0f, 0.785398f,
-                                            1.5708f, 2.35619f,
-                                            3.14159f, 3.92699f,
-                                            4.71239f, 5.49779f,
-                                            6.28319f};
+const float TransformUI::lockedAngles[9] =  {0.0f, 0.7853981634f,
+                                            1.5707963268f, 2.3561944902f,
+                                            3.1415926536f, 3.926990817f,
+                                            4.7123889804f, 5.4977871438f,
+                                            6.2831853072f};
 
 void TransformUI::init()
 {
@@ -192,7 +192,7 @@ bool TransformUI::mouseDrag(MouseEvent evt)
         {
             mRotationCurrentDir = pos - mMouseDragStart;
             mRotationAngle = getAngle(mRotationStartDir, mRotationCurrentDir);
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < sizeof(lockedAngles)/sizeof(int); i++)
             {
                 // Lock to angles
                 if ((mShiftDown && mRotationAngle >= lockedAngles[i]) && mRotationAngle <= lockedAngles[i+1])
@@ -230,8 +230,9 @@ float TransformUI::getAngle(const vec2& v1, const vec2& v2)
 vec2 TransformUI::rotatePoint(const vec2& point, const vec2& rotBase, float angleRadian)
 {
     vec2 v = point - rotBase;
-    v = rotate(v, angleRadian);
-    return rotBase + v;
+    vec2 v_pxlP = vec2(static_cast<int>(v.x),static_cast<int>(v.y));
+    v_pxlP = rotate(v_pxlP, angleRadian);
+    return rotBase + v_pxlP;
 }
 
 void TransformUI::draw()
