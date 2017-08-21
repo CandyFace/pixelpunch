@@ -4,10 +4,7 @@
 using namespace ci;
 using namespace cinder::app;
 
-#ifdef _WIN32
-    #define _USE_MATH_DEFINES
-    #include <cmath>
-#endif
+#define PI_4        M_PI/4
 
 TransformUI::TransformUI(void) :
     mHandleRadius(4.0f),
@@ -193,10 +190,10 @@ bool TransformUI::mouseDrag(MouseEvent evt)
             for (int i = 0; i < 9; i++)
             {
                 // Lock to angles
-                if (mShiftDown && (mRotationAngle >= i*M_PI_4 && mRotationAngle <= (i*M_PI_4)+1))
+                if (mShiftDown && (mRotationAngle >= i*PI_4 && mRotationAngle <= (i*PI_4)+1))
                 {
                     // rotate by 45 degrees
-                    mRotationAngle = i*M_PI_4;
+                    mRotationAngle = i*PI_4;
                     vec3 rotBase = vec3(mViewToShape * vec4(mMouseDragStart, 0, 1));
                     for (int j = 0; j < 4; j++){
                         vec2 rotatePoints = rotatePoint(mPreRotShape[j], vec2(roundf(rotBase.x),roundf(rotBase.y)), mRotationAngle);
