@@ -4,6 +4,11 @@
 using namespace ci;
 using namespace cinder::app;
 
+#ifdef _WIN32
+    #define _USE_MATH_DEFINES
+    #include <cmath>
+#endif
+
 TransformUI::TransformUI(void) :
     mHandleRadius(4.0f),
     mRotationHandleLength(40.0f),
