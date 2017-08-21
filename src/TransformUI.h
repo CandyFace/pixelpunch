@@ -9,7 +9,6 @@ class TransformUI
 {
  public:
     TransformUI(void);
-    ~TransformUI(void);
     void setView(ci::ivec2 windowSize, float scale);
     void setShape(ci::Rectf rect);
 
@@ -34,7 +33,6 @@ class TransformUI
     static const int TOP_RIGHT = 1;
     static const int BOTTOM_RIGHT = 2;
     static const int BOTTOM_LEFT = 3;
-    static const float lockedAngles[9];
 
     static const int TOP = 0;
     static const int RIGHT = 1;

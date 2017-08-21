@@ -19,20 +19,11 @@ TransformUI::TransformUI(void) :
 {
 }
 
-const float TransformUI::lockedAngles[9] =  {0.0f, 0.7853981634f,
-                                            1.5707963268f, 2.3561944902f,
-                                            3.1415926536f, 3.926990817f,
-                                            4.7123889804f, 5.4977871438f,
-                                            6.2831853072f};
-
 void TransformUI::init()
 {
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++) {
         mInitRotShape[i] = shape[i];
-}
-
-TransformUI::~TransformUI(void)
-{
+    }
 }
 
 void TransformUI::center()
@@ -118,7 +109,7 @@ bool TransformUI::mouseMove(MouseEvent evt)
         // An edge to drag?
         for (int i = 0; i < 4; i++)
         {
-         vec2 edgeDir = normalize((shape[(i+1)%4] - shape[i]));
+            vec2 edgeDir = normalize(shape[(i+1)%4] - shape[i]);
             vec2 cornerToMouse = posShape - shape[i];
             vec2 edgeToMouse = cornerToMouse - edgeDir * dot(cornerToMouse, edgeDir);
             if (length(edgeToMouse) < mHandleRadius)
@@ -184,29 +175,32 @@ bool TransformUI::mouseDrag(MouseEvent evt)
             {
                 mRotationAngle = 0;
                 mIsRotating = true;
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 4; i++) {
                     mPreRotShape[i] = shape[i];
+                    std::cout << mPreRotShape[i] << "\n " << shape[i];
+                }
             }
         }
         if (mIsRotating)
         {
             mRotationCurrentDir = pos - mMouseDragStart;
             mRotationAngle = getAngle(mRotationStartDir, mRotationCurrentDir);
-            for (int i = 0; i < sizeof(lockedAngles)/sizeof(int); i++)
+            for (int i = 0; i < 9; i++)
             {
                 // Lock to angles
-                if ((mShiftDown && mRotationAngle >= lockedAngles[i]) && mRotationAngle <= lockedAngles[i+1])
+                if (mShiftDown && (mRotationAngle >= i*M_PI_4 && mRotationAngle <= (i*M_PI_4)+1))
                 {
-                    mRotationAngle = lockedAngles[i];
-                    vec3 rotBase = vec3(mViewToShape* vec4(mMouseDragStart, 0, 1));
+                    // rotate by 45 degrees
+                    mRotationAngle = i*M_PI_4;
+                    vec3 rotBase = vec3(mViewToShape * vec4(mMouseDragStart, 0, 1));
                     for (int j = 0; j < 4; j++){
-                        vec2 rotatePoints = rotatePoint(mPreRotShape[j], vec2(rotBase), mRotationAngle);
+                        vec2 rotatePoints = rotatePoint(mPreRotShape[j], vec2(roundf(rotBase.x),roundf(rotBase.y)), mRotationAngle);
                         shape[j] = rotatePoints;
                     }
                 }
             }
             if (!mShiftDown && mRotationAngle > 0.01){
-                vec3 rotBase = vec3(mViewToShape* vec4(mMouseDragStart, 0, 1));
+                vec3 rotBase = vec3(mViewToShape * vec4(mMouseDragStart, 0, 1));
                 for (int i = 0; i < 4; i++){
                     vec2 rotatePoints = rotatePoint(mPreRotShape[i], vec2(rotBase), mRotationAngle);
                     shape[i] = rotatePoints;

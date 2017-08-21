@@ -481,10 +481,10 @@ void PixelPunchApp::draw()
     if (mTransformMethod == pp::TransformMethod::TM_IDENTITY && tex)
     {
         gl::pushMatrices();
-        float ratio = static_cast<float>(mSourceImage.getWidth()) / static_cast<float>(tex->getWidth());
+        float ratio = static_cast<float>(mSourceImage.getWidth() / (tex->getWidth()));
         float scale = max<float>(1.0f, mViewScale * ratio);
         gl::scale(vec3(scale, scale, scale));
-        vec2 pos = 0.5f *(windowSize/scale -(vec2)tex->getSize());
+        vec2 pos = 0.5f *(windowSize/scale - (vec2)tex->getSize());
 
         gl::draw(tex, pos);
         gl::popMatrices();
