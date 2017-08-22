@@ -196,7 +196,7 @@ bool TransformUI::mouseDrag(MouseEvent evt)
                     mRotationAngle = i*PI_4;
                     vec3 rotBase = vec3(mViewToShape * vec4(mMouseDragStart, 0, 1));
                     for (int j = 0; j < 4; j++){
-                        vec2 rotatePoints = rotatePoint(mPreRotShape[j], vec2(roundf(rotBase.x),roundf(rotBase.y)), mRotationAngle);
+                        vec2 rotatePoints = rotatePoint(mPreRotShape[j], vec2(rotBase), mRotationAngle);
                         shape[j] = rotatePoints;
                     }
                 }
@@ -225,7 +225,7 @@ float TransformUI::getAngle(const vec2& v1, const vec2& v2)
 
 vec2 TransformUI::rotatePoint(const vec2& point, const vec2& rotBase, float angleRadian)
 {
-    vec2 v = point - rotBase;
+    vec2 v = point - vec2(roundf(rotBase.x),roundf(rotBase.y));
     vec2 v_pxlP = vec2(static_cast<int>(v.x),static_cast<int>(v.y));
     v_pxlP = rotate(v_pxlP, angleRadian);
     return rotBase + v_pxlP;
